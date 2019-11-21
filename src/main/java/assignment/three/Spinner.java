@@ -1,28 +1,31 @@
 package assignment.three;
 
+import java.util.Random;
+
 public class Spinner {
 
+    // Static to avoid duplicating across spinners...
+    private static Random randomNumberGenerator = new Random();
     private Card card;
 
     public Spinner() {
-        // Initialise with a random card.
-        spin();
+
+        spin(); // Initialise with a random card.
     }
 
-    // Can optionally initialise with a specific card
-    public Spinner(Card card) {
-        setCard(card);
-    }
 
     public Card spin() {
-        setCard(Card.getRandomCard());
-        return card;
+        // Get an array of cards from the enum
+        Card[] cardArray = Card.values();
+        // Generate a random index for the array
+        int randomIndex = randomNumberGenerator.nextInt(cardArray.length);
+        // Set the card to whatever the random index returns
+        card = cardArray[randomIndex];
+
+        return card; // Return the card for convenience (can be ignored)
     }
 
-    public void setCard(Card card) {
-        this.card = card;
-    }
-
+    // Just in case we missed it...
     public Card getCard() {
         return card;
     }
