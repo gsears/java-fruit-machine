@@ -7,6 +7,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class SpinnerView extends JPanel {
 
     JLabel cardTextLabel;
