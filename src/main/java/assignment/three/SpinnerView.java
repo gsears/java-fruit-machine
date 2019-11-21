@@ -1,32 +1,34 @@
 package assignment.three;
 
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.awt.Color;
 import javax.swing.*;
 
 public class SpinnerView extends JPanel {
-    JLabel cardText;
+    JLabel cardTextLabel;
 
     public SpinnerView() {
         this("");
     }
 
     public SpinnerView(String initialText) {
-        setLayout(new BorderLayout());
+        setLayout(new GridBagLayout());
         setBackground(Color.YELLOW);
 
-        // Create and Add Components
-        createCardText();
-
+        cardTextLabel = new JLabel();
         setText(initialText);
+
+        GridBagConstraints gc = new GridBagConstraints();
+
+        gc.gridx = 0;
+        gc.gridy = 0;
+        gc.anchor = GridBagConstraints.CENTER;
+
+        add(cardTextLabel, gc);
     }
 
-    public void createCardText() {
-        cardText = new JLabel();
-        add(cardText, BorderLayout.CENTER);
-    }
 
     public void setText(String text) {
-        cardText.setText(text);
+        cardTextLabel.setText(text);
     }
 }
