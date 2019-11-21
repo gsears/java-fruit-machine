@@ -1,10 +1,14 @@
 package assignment.three;
 
-import java.awt.*;
 import java.awt.Color;
-import javax.swing.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public class SpinnerView extends JPanel {
+
     JLabel cardTextLabel;
 
     public SpinnerView() {
@@ -14,6 +18,7 @@ public class SpinnerView extends JPanel {
     public SpinnerView(String initialText) {
         setLayout(new GridBagLayout());
         setBackground(Color.YELLOW);
+        setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
         cardTextLabel = new JLabel();
         setText(initialText);
@@ -26,7 +31,6 @@ public class SpinnerView extends JPanel {
 
         add(cardTextLabel, gc);
     }
-
 
     public void setText(String text) {
         cardTextLabel.setText(text);
