@@ -11,9 +11,9 @@ public class SpinnerSet {
 
     public SpinnerSet(int count) {
         this.count = count;
-        // Allocate spinner array
+
+        // Set the internal spinners and their displayed cards
         spinners = new Spinner[count];
-        // Allocate card array
         cards = new Card[count];
 
         // Create spinner instances
@@ -26,7 +26,7 @@ public class SpinnerSet {
     }
 
     public void spin() {
-        // Reset count cache
+        // Reset card count cache
         cardCounts.clear();
 
         for (int i = 0; i < count; i++) {
@@ -38,21 +38,18 @@ public class SpinnerSet {
             Card newCard = spinner.getCard();
             // Add to the card counter cache.
             cardCounts.add(newCard);
-            // Push the card to the stored array
+            // Push the card to card array
             cards[i] = newCard;
         }
     }
 
+    // Get the cards shown on the spinners
     public Card[] getCards() {
         return cards;
     }
 
+    // Get the object that holds the card counts (for scoring combinations etc.)
     public CardCombination getCardCounts() {
         return cardCounts;
-    }
-
-    // Returns the number of spinners
-    public int getSpinnerCount() {
-        return count;
     }
 }
