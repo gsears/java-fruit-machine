@@ -6,40 +6,75 @@ import java.awt.event.*;
 
 public class FruitMachineView extends JFrame {
 
+    private static final int PANEL_PADDING = 10;
+
     FruitMachineController controller;
 
+    PaddedJPanel buttonPanelWrapper;
+    JPanel buttonPanel;
     JButton newGameButton;
     JButton spinButton;
 
+    PaddedJPanel messagePanel;
     JLabel balanceDisplay;
     JLabel messageDisplay;
     JLabel victoryDisplay;
 
-    JPanel dirtyPanel;
-
-    SpinnerSetView spinners;
+    SpinnerSetView spinnerPanel;
 
     public FruitMachineView(FruitMachineController controller) {
         this.controller = controller;
+
+        // Layout
         setSize(600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(2, 2));
 
-        initComponents();
+        // Add Panels
+        createMessagePanel();
+        createSpinnerPanel();
+        createButtonPanel();
+
+        add(messagePanel);
+        add(new JPanel()); // Blank panel for 2nd grid position
+        add(spinnerPanel);
+        add(buttonPanelWrapper);
 
         this.setVisible(true);
     }
 
-    private void initComponents() {
-        dirtyPanel = new JPanel();
+    private void createMessagePanel() {
+        // Initialise Panel
+        messagePanel = new PaddedJPanel(PANEL_PADDING);
+
+        // Set layout
+        messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.PAGE_AXIS));
 
         balanceDisplay = new JLabel();
         messageDisplay = new JLabel();
         victoryDisplay = new JLabel();
 
-        spinners = new SpinnerSetView(controller.getSpinnerCount());
+        messagePanel.add(balanceDisplay);
+        messagePanel.add(Box.createVerticalGlue());
+        messagePanel.add(messageDisplay);
+        messagePanel.add(Box.createVerticalGlue());
+        messagePanel.add(victoryDisplay);
+    }
+
+    private void createSpinnerPanel() {
+
+        spinnerPanel = new SpinnerSetView(controller.getSpinnerCount());
+        spinnerPanel.setPadding(PANEL_PADDING);
+    }
+
+    private void createButtonPanel() {
+
+        buttonPanelWrapper = new PaddedJPanel(PANEL_PADDING);
+        buttonPanelWrapper.setLayout(new GridBagLayout());
+        buttonPanel = new JPanel(new GridLayout(2, 1));
 
         newGameButton = new JButton("New Game");
+
         newGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -48,6 +83,7 @@ public class FruitMachineView extends JFrame {
         });
 
         spinButton = new JButton("Spin");
+
         spinButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -55,18 +91,16 @@ public class FruitMachineView extends JFrame {
             }
         });
 
-        dirtyPanel.add(balanceDisplay);
-        dirtyPanel.add(messageDisplay);
-        dirtyPanel.add(victoryDisplay);
-        dirtyPanel.add(newGameButton);
-        dirtyPanel.add(spinButton);
+        buttonPanel.add(newGameButton);
+        buttonPanel.add(spinButton);
 
-        add(dirtyPanel);
-        add(spinners);
+        buttonPanelWrapper.add(buttonPanel);
     }
 
+
+
     public void setSpinners(Card[] cards) {
-        spinners.setCards(cards);
+        spinnerPanel.setCards(cards);
     }
 
     public void setBalanceDisplay(String text) {
