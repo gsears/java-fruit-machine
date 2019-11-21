@@ -1,21 +1,13 @@
 package assignment.three;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class SpinnerSet {
 
     private int count;
     private Spinner[] spinners;
     private Card[] cards;
 
-    private Map<Card, Integer> currentCardCounts = new HashMap<Card, Integer>();
-    private int currentMaxCardCount;
-
-    // Three spinners is traditional
-    public SpinnerSet() {
-        this(3);
-    }
+    // This object stores the card counts
+    CardCombination cardCounts = new CardCombination();
 
     public SpinnerSet(int count) {
         this.count = count;
@@ -34,46 +26,29 @@ public class SpinnerSet {
     }
 
     public void spin() {
-        // Reset the card counts and maximum count.
-        currentCardCounts.clear();
-        currentMaxCardCount = 0;
+        // Reset count cache
+        cardCounts.clear();
 
-        // For each spinner in the set.
-        for (int i = 0; i < spinners.length; i++) {
-            // Spin the spinner and get the new value
-            Card card = spinners[i].spin();
-            // Keep track of values for outputing later
-            cards[i] = card;
+        for (int i = 0; i < count; i++) {
+            // Get each spinner
+            Spinner spinner = spinners[i];
+            spinner.spin();
 
-            // If the new card already exists in our count cache.
-            if (currentCardCounts.containsKey(card)) {
-                // Increment the count by one
-                int cardCount = currentCardCounts.get(card);
-                cardCount++;
-                // Set the new maximum card count if it's the new highest count
-                if (cardCount > currentMaxCardCount) {
-                    currentMaxCardCount = cardCount;
-                }
-                // Put the new count in our count cache.
-                currentCardCounts.put(card, cardCount);
-            } else {
-                // Add the card to the cache and set its count to one.
-                currentCardCounts.put(card, 1);
-            }
+            // Get the new value
+            Card newCard = spinner.getCard();
+            // Add to the card counter cache.
+            cardCounts.add(newCard);
+            // Push the card to the stored array
+            cards[i] = newCard;
         }
-
     }
 
     public Card[] getCards() {
         return cards;
     }
 
-    public Map<Card, Integer> getCardCounts() {
-        return currentCardCounts;
-    }
-
-    public int getMaxCardCount() {
-        return currentMaxCardCount;
+    public CardCombination getCardCounts() {
+        return cardCounts;
     }
 
     // Returns the number of spinners

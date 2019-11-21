@@ -1,18 +1,17 @@
 package assignment.three;
 
-import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.*;
 
-public class CardView extends JPanel {
+public class SpinnerView extends JPanel {
     JLabel cardText;
 
-    public CardView() {
+    public SpinnerView() {
         this("");
     }
 
-    public CardView(String initialText) {
+    public SpinnerView(String initialText) {
         setLayout(new BorderLayout());
         setBackground(Color.YELLOW);
 

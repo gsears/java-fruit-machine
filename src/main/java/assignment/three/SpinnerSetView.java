@@ -6,27 +6,27 @@ import javax.swing.*;
 public class SpinnerSetView extends JPanel {
     private static final int PADDING = 10;
     int size;
-    CardView[] cardViews;
+    SpinnerView[] SpinnerViews;
 
     SpinnerSetView(int size) {
         setLayout(new GridLayout(1, size, PADDING, PADDING));
         this.size = size;
-        createCardViews();
+        createSpinnerViews();
     }
 
-    void createCardViews() {
-        cardViews = new CardView[size];
+    void createSpinnerViews() {
+        SpinnerViews = new SpinnerView[size];
 
         for (int i = 0; i < size; i++) {
-            CardView cv = new CardView();
-            cardViews[i] = cv;
+            SpinnerView cv = new SpinnerView();
+            SpinnerViews[i] = cv;
             add(cv);
         }
     }
 
-    void setCardTexts(String[] texts) {
-        for (int i = 0; i < cardViews.length; i++) {
-            cardViews[i].setText(texts[i]);
+    void setCards(Card[] cards) {
+        for (int i = 0; i < SpinnerViews.length; i++) {
+            SpinnerViews[i].setText(cards[i].toString());
         }
     }
 }

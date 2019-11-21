@@ -16,7 +16,7 @@ public class FruitMachineView extends JFrame {
 
     JPanel dirtyPanel;
 
-    SpinnerSetView cards;
+    SpinnerSetView spinners;
 
     public FruitMachineView(FruitMachineController controller) {
         this.controller = controller;
@@ -35,7 +35,7 @@ public class FruitMachineView extends JFrame {
         messageDisplay = new JLabel();
         victoryDisplay = new JLabel();
 
-        cards = new SpinnerSetView(controller.getSpinnerCount());
+        spinners = new SpinnerSetView(controller.getSpinnerCount());
 
         newGameButton = new JButton("New Game");
         newGameButton.addActionListener(new ActionListener() {
@@ -58,13 +58,13 @@ public class FruitMachineView extends JFrame {
         dirtyPanel.add(victoryDisplay);
         dirtyPanel.add(newGameButton);
         dirtyPanel.add(spinButton);
-        dirtyPanel.add(cards);
+        dirtyPanel.add(spinners);
 
         add(dirtyPanel);
     }
 
-    public void setCardTexts(String[] texts) {
-        cards.setCardTexts(texts);
+    public void setSpinners(Card[] cards) {
+        spinners.setCards(cards);
     }
 
     public void setBalanceDisplay(String text) {

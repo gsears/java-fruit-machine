@@ -1,7 +1,5 @@
 package assignment.three;
 
-import java.util.Map;
-
 // Notifies controllers of changes through java beans PropertyChangeSupport.
 public interface FruitMachineInterface {
 
@@ -11,13 +9,15 @@ public interface FruitMachineInterface {
 
     public Card[] getCards();
 
-    // public Map<Card, Integer> getCardCounts();
-
     public int getSpinnerCount();
 
     public GameState getGameState();
 
-    public int getBalance();
+    public int getPlayerBalance();
+
+    public CardCombination getLastScoringCombo();
+
+    public int getLastPayout();
 
     public void reset();
 
