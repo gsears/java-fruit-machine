@@ -26,15 +26,16 @@ public class FruitMachineView extends JFrame {
         this.controller = controller;
 
         // Layout
-        setSize(600, 600);
+        setSize(600, 350);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(2, 2));
 
-        // Add Panels
+        // Initialise main panels
         createMessagePanel();
         createSpinnerPanel();
         createButtonPanel();
 
+        // Add main panels to display
         add(messagePanel);
         add(new JPanel()); // Blank panel for 2nd grid position
         add(spinnerPanel);
@@ -44,36 +45,48 @@ public class FruitMachineView extends JFrame {
     }
 
     private void createMessagePanel() {
-        // Initialise Panel
+        // Initialise Panel with padding
         messagePanel = new PaddedJPanel(PANEL_PADDING);
 
-        // Set layout
+        // Set Layout
         messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.PAGE_AXIS));
 
+        // Create instances
         balanceDisplay = new JLabel();
         messageDisplay = new JLabel();
         victoryDisplay = new JLabel();
 
+        // Add to panel
         messagePanel.add(balanceDisplay);
-        messagePanel.add(Box.createVerticalGlue());
+        messagePanel.add(Box.createVerticalGlue()); // Adds spacer
         messagePanel.add(messageDisplay);
-        messagePanel.add(Box.createVerticalGlue());
+        messagePanel.add(Box.createVerticalGlue()); // Adds spacer
         messagePanel.add(victoryDisplay);
     }
 
     private void createSpinnerPanel() {
-
+        // Initialise Panel
         spinnerPanel = new SpinnerSetView(controller.getSpinnerCount());
+        // Set padding
         spinnerPanel.setPadding(PANEL_PADDING);
     }
 
     private void createButtonPanel() {
-
+        // Initialise Panels
         buttonPanelWrapper = new PaddedJPanel(PANEL_PADDING);
-        buttonPanelWrapper.setLayout(new GridBagLayout());
         buttonPanel = new JPanel(new GridLayout(2, 1));
 
+        // Set layout of wrapper to auto size border and centralise inner panel
+        buttonPanelWrapper.setLayout(new GridBagLayout());
+
+        // Create instances
         newGameButton = new JButton("New Game");
+        spinButton = new JButton("Spin");
+
+        // Add listeners
+
+        // Uses anonymous classes as this is a concise convention
+        // when listeners have a one-to-one relationship with components.
 
         newGameButton.addActionListener(new ActionListener() {
             @Override
@@ -82,8 +95,6 @@ public class FruitMachineView extends JFrame {
             }
         });
 
-        spinButton = new JButton("Spin");
-
         spinButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -91,14 +102,15 @@ public class FruitMachineView extends JFrame {
             }
         });
 
+        // Add components to button panel
         buttonPanel.add(newGameButton);
         buttonPanel.add(spinButton);
 
+        // Add button panel to wrapper
         buttonPanelWrapper.add(buttonPanel);
     }
 
-
-
+    // Methods for controller.
     public void setSpinners(Card[] cards) {
         spinnerPanel.setCards(cards);
     }
