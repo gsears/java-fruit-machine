@@ -1,6 +1,7 @@
 package assignment.three;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 
 public class FruitMachineView extends JFrame {
@@ -22,6 +23,7 @@ public class FruitMachineView extends JFrame {
         this.controller = controller;
         setSize(600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new GridLayout(2, 2));
 
         initComponents();
 
@@ -58,9 +60,9 @@ public class FruitMachineView extends JFrame {
         dirtyPanel.add(victoryDisplay);
         dirtyPanel.add(newGameButton);
         dirtyPanel.add(spinButton);
-        dirtyPanel.add(spinners);
 
         add(dirtyPanel);
+        add(spinners);
     }
 
     public void setSpinners(Card[] cards) {
