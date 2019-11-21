@@ -1,15 +1,14 @@
 package assignment.three;
 
 import java.awt.GridLayout;
-import javax.swing.*;
 
-public class SpinnerSetView extends JPanel {
-    private static final int PADDING = 10;
+public class SpinnerSetView extends PaddedJPanel {
+    private static final int SPINNER_PADDING = 10;
     int size;
     SpinnerView[] SpinnerViews;
 
     SpinnerSetView(int size) {
-        setLayout(new GridLayout(1, size, PADDING, PADDING));
+        setLayout(new GridLayout(1, size, SPINNER_PADDING, SPINNER_PADDING));
         this.size = size;
         createSpinnerViews();
     }
