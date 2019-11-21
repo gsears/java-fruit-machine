@@ -1,6 +1,6 @@
 package assignment.three;
 
-// Notifies controllers of changes through java beans PropertyChangeSupport.
+
 public interface FruitMachineInterface {
 
     public void spin();
@@ -27,6 +27,9 @@ public interface FruitMachineInterface {
 
     public void registerObserver(SpinnerSetObserver o);
 
-    // TODO: Add RemoveObserver Functions
+    public void removeObserver(GameStateObserver o);
 
+    public void removeObserver(BalanceObserver o);
+
+    public void removeObserver(SpinnerSetObserver o);
 }
