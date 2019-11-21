@@ -2,16 +2,19 @@ package assignment.three;
 
 import java.util.Random;
 
+// The card combinations as enums
 public enum Card {
     JOKER, JACK, QUEEN, KING, ACE;
 
     // Make this a constant to avoid values() call overhead.
     public static final int length = values().length;
 
-    // Add this for a static helper function to generate a random card.
+    // Add this for a static helper function to return a random card.
     private static Random randomNumberGenerator = new Random();
 
-    // Pick a random card from the enum.
+    // Return a random card from the enum.
+    // This could have been put in the 'spinner' class. Wasn't sure how to
+    // separate concerns here, but I imagined 'drawing' a card from the deck.
     public static Card getRandomCard() {
         int randomIndex = randomNumberGenerator.nextInt(length);
         return values()[randomIndex];
