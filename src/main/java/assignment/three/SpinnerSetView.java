@@ -2,6 +2,7 @@ package assignment.three;
 
 import java.awt.GridLayout;
 
+@SuppressWarnings("serial")
 public class SpinnerSetView extends PaddedJPanel {
     private static final int SPINNER_PADDING = 10;
     int size;
