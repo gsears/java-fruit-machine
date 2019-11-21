@@ -12,7 +12,7 @@ public class SpinnerSet {
     public SpinnerSet(int count) {
         this.count = count;
 
-        // Set the internal spinners and their displayed cards
+        // Initialise based on how many spinners we want
         spinners = new Spinner[count];
         cards = new Card[count];
 
@@ -21,8 +21,7 @@ public class SpinnerSet {
             spinners[i] = new Spinner();
         }
 
-        // initialise the spinners
-        spin();
+        spin(); // initialise the spinners with random values
     }
 
     public void spin() {
@@ -32,10 +31,8 @@ public class SpinnerSet {
         for (int i = 0; i < count; i++) {
             // Get each spinner
             Spinner spinner = spinners[i];
-            spinner.spin();
-
-            // Get the new value
-            Card newCard = spinner.getCard();
+            // Spin and get the value
+            Card newCard = spinner.spin();
             // Add to the card counter cache.
             cardCounts.add(newCard);
             // Push the card to card array
