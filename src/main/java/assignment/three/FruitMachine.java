@@ -5,16 +5,15 @@ import java.util.ArrayList;
 // Implements an interface to ensure compatability with controllers
 public class FruitMachine implements FruitMachineInterface {
 
-    // Fruit Machine Constants for MAIN function
+    // Balance constants
     private static final int STARTING_BALANCE = 100;
     private static final int WINNING_PLAYER_BALANCE = 150;
     private static final int LOSING_PLAYER_BALANCE = 0;
-
+    // Scoring constants
     private static final int JOKER_MULTIPLIER = -25;
     private static final int TWO_OF_A_KIND_PAYOUT = 20;
     private static final int THREE_OF_A_KIND_PAYOUT = 50;
-
-    // This can be changed for
+    // Machine constants
     private static final int NUMBER_OF_SPINNERS = 3;
 
     // Add observers to listen to different types of state change within the model
@@ -33,6 +32,7 @@ public class FruitMachine implements FruitMachineInterface {
     private final SpinnerSet spinners; // The card spinners
     private GameState gameState; // The game state
 
+    private int spinnerCount;
     private int lastPayout; // The most recent payout, to send to controller
     private CardCombination lastScoringCombo; // The last card combination to send to controller
 
@@ -44,7 +44,7 @@ public class FruitMachine implements FruitMachineInterface {
         payouts.addPayout(3, THREE_OF_A_KIND_PAYOUT);
 
         // Create the fruit machine model (this)
-        FruitMachine fruitMachineModel = new FruitMachine();
+        FruitMachine fruitMachineModel = new FruitMachine(NUMBER_OF_SPINNERS);
         fruitMachineModel.setPayouts(payouts);
 
         // Create the fruit machine controller
@@ -60,9 +60,10 @@ public class FruitMachine implements FruitMachineInterface {
 
     // Constructor
     // TODO: Add variables to set the various components.
-    public FruitMachine() {
+    public FruitMachine(int spinnerCount) {
+        this.spinnerCount = spinnerCount;
         // Create spinners
-        spinners = new SpinnerSet(NUMBER_OF_SPINNERS);
+        spinners = new SpinnerSet(spinnerCount);
         // Create player balance (initially 0)
         playerBalance = new Balance();
         // Initialise all values
@@ -82,7 +83,8 @@ public class FruitMachine implements FruitMachineInterface {
         if (gameState == GameState.PLAY) {
 
             spinners.spin();
-            // get Current Combo
+
+            // get current card counts
             CardCombination cardCounts = spinners.getCardCounts();
 
             // If there's a JOKER in the current card counts
@@ -100,8 +102,6 @@ public class FruitMachine implements FruitMachineInterface {
                 lastPayout = payouts.getPayout(highestCount);
                 // Add card counts to the scoring combo.
                 lastScoringCombo = cardCounts.filterByCount(x -> x == highestCount);
-                System.out.println("ACTUAL COMBO: " + cardCounts);
-                System.out.println("LAST SCORING COMBO: " + lastScoringCombo);
             }
             // Update anything observing the spinners (in the controller)
             notifySpinnerObservers();
@@ -141,7 +141,7 @@ public class FruitMachine implements FruitMachineInterface {
 
     @Override
     public int getSpinnerCount() {
-        return spinners.getSpinnerCount();
+        return spinnerCount;
     }
 
     @Override
@@ -179,6 +179,24 @@ public class FruitMachine implements FruitMachineInterface {
     @Override
     public void registerObserver(final SpinnerSetObserver o) {
         spinnerSetObservers.add(o);
+
+    }
+
+    @Override
+    public void removeObserver(final GameStateObserver o) {
+        gameStateObservers.remove(o);
+
+    }
+
+    @Override
+    public void removeObserver(final BalanceObserver o) {
+        balanceObservers.remove(o);
+
+    }
+
+    @Override
+    public void removeObserver(final SpinnerSetObserver o) {
+        spinnerSetObservers.remove(o);
 
     }
 
