@@ -19,12 +19,14 @@ import java.util.Map;
 public class FruitMachineController
         implements BalanceObserver, SpinnerSetObserver, GameStateObserver {
 
-    private static final String INITIAL_MESSAGE = "Welcome!";
+    private static final String WELCOME_MESSAGE = "Welcome!";
     private static final String VICTORY_MESSAGE = "You win!";
-    private static final String LOSE_MESSAGE = "You Lose.";
+    private static final String LOSE_MESSAGE = "You lose.";
 
-    private FruitMachineView view;
+    // Model uses an interface, as we only need to ensure certain functionality is met.
+    // "Futureproofs" our controller for any drastic model refactors.
     private FruitMachineInterface model;
+    private FruitMachineView view;
 
     FruitMachineController(FruitMachineInterface model) {
         this.model = model;
@@ -98,8 +100,8 @@ public class FruitMachineController
         // This is only fired when the model resets, i.e. at the start of a new game.
         if (gameState == GameState.PLAY) {
             enablePlay(); // Enable spin buttons
-            setMessageDisplay(INITIAL_MESSAGE); // Set a welcome message
-            setVictoryDisplay(""); // Reset the victory display
+            setMessageDisplay(WELCOME_MESSAGE);
+            setVictoryDisplay("");
         }
     }
 
