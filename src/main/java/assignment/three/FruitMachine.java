@@ -2,23 +2,31 @@ package assignment.three;
 
 import java.util.ArrayList;
 
-// Implements an interface to ensure compatability with controllers
+/**
+ * FruitMachine.java | Gareth Sears - 2493194
+ * 
+ * A model for a fruit machine.
+ * 
+ * The design was as modular as possible so different types of machine could easily be made by
+ * changing a few variables. For example, different machines could have different payouts, numbers
+ * of spinners, winning / losing points.
+ */
 public class FruitMachine implements FruitMachineInterface {
+    // Implements an interface to ensure compatability with controllers
 
-    // Balance constants
-    private static final int STARTING_BALANCE = 100;
-    private static final int WINNING_PLAYER_BALANCE = 150;
-    private static final int LOSING_PLAYER_BALANCE = 0;
+    // Defaults for all machines
+    private static final int DEFAULT_NUMBER_OF_SPINNERS = 3;
+    private static final int DEFAULT_STARTING_BALANCE = 100;
+    private static final int DEFAULT_WINNING_BALANCE = 150;
+    private static final int DEFAULT_LOSING_BALANCE = 0;
     // Scoring constants
     private static final int JOKER_MULTIPLIER = -25;
-    private static final int TWO_OF_A_KIND_PAYOUT = 20;
-    private static final int THREE_OF_A_KIND_PAYOUT = 50;
-    // Machine constants
-    private static final int NUMBER_OF_SPINNERS = 3;
 
-    // Add observers to listen to different types of state change within the model
-    // These will normally be controllers (or views, depending on MVC pattern used)
-    private final ArrayList<BalanceObserver> balanceObservers = new ArrayList<BalanceObserver>();
+    // Use an observer pattern for MVC implementation. The observers are either views / controllers
+    // depending on the architecture used. This allows views and controllers to respond to state
+    // changes without the model having knowledge of them.
+    private final ArrayList<BalanceObserver> balanceObservers = 
+            new ArrayList<BalanceObserver>();
 
     private final ArrayList<SpinnerSetObserver> spinnerSetObservers =
             new ArrayList<SpinnerSetObserver>();
@@ -26,56 +34,64 @@ public class FruitMachine implements FruitMachineInterface {
     private final ArrayList<GameStateObserver> gameStateObservers =
             new ArrayList<GameStateObserver>();
 
+    private int spinnerCount; // How many spinners a machine has
+    private SpinnerSet spinners; // The card spinners
+    private CardCounts lastScoringCounts; // A filtered card combination showing what 'scored'.
+    
+    private Payouts payouts; // An object for looking up winning payouts for this machine
+    private int lastPayout; // The most recent payout
 
-    private Payouts payouts; // An object for looking up winning payouts
-    private final Balance playerBalance; // Keeps track of the balance
-    private final SpinnerSet spinners; // The card spinners
+    private Balance playerBalance; // Keeps track of the balance
+    private int startingBalance = DEFAULT_STARTING_BALANCE;
+    private int winningBalance = DEFAULT_WINNING_BALANCE;
+    private int losingBalance = DEFAULT_LOSING_BALANCE;
+    
     private GameState gameState; // The game state
 
-    private int spinnerCount;
-    private int lastPayout; // The most recent payout, to send to controller
-    private CardCounts lastScoringCounts; // The last card combination to send to controller
-
+    // MAIN FUNCTION - SET UP A MACHINE WITH PAYOUTS
     public static void main(final String[] args) {
 
-        // Create an object to get the winning payouts
+        // This is set outside of the class, as different machines may want different
+        // payouts for different combinations.
         Payouts payouts = new Payouts();
-        payouts.addPayout(2, TWO_OF_A_KIND_PAYOUT);
-        payouts.addPayout(3, THREE_OF_A_KIND_PAYOUT);
+        payouts.addPayout(2, 20); // TWO OF A KIND PAYOUT
+        payouts.addPayout(3, 50); // THREE OF A KIND PAYOUT
 
-        // Create the fruit machine model (this)
-        FruitMachine fruitMachineModel = new FruitMachine(NUMBER_OF_SPINNERS);
-        fruitMachineModel.setPayouts(payouts);
+        // MVC Setup
+        FruitMachine fruitMachineModel = new FruitMachine(payouts);
 
-        // Create the fruit machine controller
         FruitMachineController fruitMachineController =
                 new FruitMachineController(fruitMachineModel);
 
-        // Create the fruit machine view
-        FruitMachineView fruitMachineView = new FruitMachineView(fruitMachineController);
+        FruitMachineView fruitMachineView = 
+                new FruitMachineView(fruitMachineController);
 
-        // And hook it up to the controller
         fruitMachineController.addView(fruitMachineView);
+
     }
 
     // Constructor
-    // TODO: Add variables to set the various components.
-    public FruitMachine(int spinnerCount) {
+    public FruitMachine(Payouts payouts) {
+        this(DEFAULT_NUMBER_OF_SPINNERS, payouts);
+    }
+
+    // Constructor
+    public FruitMachine(int spinnerCount, Payouts payouts) {
+
         this.spinnerCount = spinnerCount;
-        // Create spinners
-        spinners = new SpinnerSet(spinnerCount);
-        // Create player balance (initially 0)
-        playerBalance = new Balance();
-        // Initialise all values
-        reset();
+        this.payouts = payouts;
+
+        // Instantiate attributes
+        spinners = new SpinnerSet(spinnerCount); // X number of spinners
+        playerBalance = new Balance(); // Defaults to 0, but is set in 'reset'
+        
+        reset(); // Initialise all values
     }
 
     public void reset() {
-        // Reset game state (observers notified in this function)
-        setGameState(GameState.PLAY);
-        // Reset balance and notify observers
-        playerBalance.setBalance(STARTING_BALANCE);
-        notifyBalanceObservers();
+        setGameState(GameState.PLAY); // Reset game state and notify game state observers
+        playerBalance.setBalance(startingBalance); // Reset balance
+        notifyBalanceObservers(); // Notify balance observers
     }
 
     // Game Logic
@@ -83,56 +99,72 @@ public class FruitMachine implements FruitMachineInterface {
         if (gameState == GameState.PLAY) {
 
             spinners.spin();
-
-            // get current card counts
-            CardCounts cardCounts = spinners.getCardCounts();
+            CardCounts cardCounts = spinners.getCardCounts(); // e.g. {QUEEN:1, JOKER:2}
 
             // If there's a JOKER in the current card counts
             if (cardCounts.contains(Card.JOKER)) {
-                // Get its value and set the payout accordingly
-                int jokerCount = cardCounts.getCount(Card.JOKER);
-                // Note: JOKER_MULTIPLIER is negative in this case.
-                lastPayout = jokerCount * JOKER_MULTIPLIER;
-                // Just add the joker counts to the scoring combo.
+
+                lastPayout = cardCounts.getCount(Card.JOKER) * JOKER_MULTIPLIER; // will be < 0
                 lastScoringCounts = cardCounts.filterByCard(x -> x == Card.JOKER);
 
             } else {
                 int highestCount = cardCounts.getMaxCardCount();
-                // Set the payout (could be 0)
-                lastPayout = payouts.getPayout(highestCount);
-                // Add card counts to the scoring combo.
                 lastScoringCounts = cardCounts.filterByCount(x -> x == highestCount);
+                // This is added for if spinners > 3 and there is more than 1 winning combo.
+                int scoringCombinationCount = lastScoringCounts.getCardSet().size();
+                // Payouts will return 0 if there isn't a payout for that count.
+                lastPayout = payouts.getPayout(highestCount) * scoringCombinationCount;
             }
-            // Update anything observing the spinners (in the controller)
-            notifySpinnerObservers();
-            // Update the player balance
-            updatePlayerBalance();
+            
+            notifySpinnerObservers(); // Update any models / controllers with new spinner state
+            updatePlayerBalance();  // Update the player balance
         }
     }
 
     private void setGameState(final GameState gameState) {
         this.gameState = gameState;
-        notifyGameStateObservers();
+        notifyGameStateObservers(); // Update any models / controllers with new game state
     }
 
     private void updatePlayerBalance() {
-        // Only update if the last payout is not 0
+        // Only do something if there's a change.
         if (lastPayout != 0) {
-            final int newBalance = playerBalance.change(lastPayout);
-            notifyBalanceObservers();
+            
+            int newBalance = playerBalance.change(lastPayout);
+            notifyBalanceObservers(); // Update any models / controllers with new balance state
 
-            if (newBalance <= LOSING_PLAYER_BALANCE) {
+            // Change the game state if a victory / loss condition is met
+            if (newBalance <= losingBalance) {
                 setGameState(GameState.LOST);
-            } else if (newBalance >= WINNING_PLAYER_BALANCE) {
+            } else if (newBalance >= winningBalance) {
                 setGameState(GameState.WON);
             }
         }
+    }
+
+    // These allow different values for different machines / modifying difficulty.
+
+    @Override
+    public void setStartingBalance(int startingBalance) {
+        this.startingBalance = startingBalance;
+    }
+
+    @Override
+    public void setLosingBalance(int losingBalance) {
+        this.losingBalance = startingBalance;
+    }
+
+    @Override
+    public void setWinningBalance(int winningBalance) {
+        this.winningBalance = winningBalance;
     }
 
     @Override
     public void setPayouts(final Payouts payouts) {
         this.payouts = payouts;
     }
+
+    // These are used to pass state to controllers.
 
     @Override
     public Card[] getCards() {
@@ -163,6 +195,8 @@ public class FruitMachine implements FruitMachineInterface {
     public int getPlayerBalance() {
         return playerBalance.getBalance();
     }
+
+    // These are used to register / notify / remove observers
 
     @Override
     public void registerObserver(final GameStateObserver o) {

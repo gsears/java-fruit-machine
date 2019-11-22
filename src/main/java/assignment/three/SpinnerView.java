@@ -19,9 +19,8 @@ public class SpinnerView extends JPanel {
 
     JLabel cardTextLabel;
 
-    // Initialise with no text if none is provided.
     public SpinnerView() {
-        this("");
+        this(""); // Initialise with no text if none is provided.
     }
 
     public SpinnerView(String initialText) {
@@ -35,7 +34,6 @@ public class SpinnerView extends JPanel {
 
         // GridBagLayout used to center text nicely.
         GridBagConstraints gc = new GridBagConstraints();
-
         gc.gridx = 0;
         gc.gridy = 0;
         gc.anchor = GridBagConstraints.CENTER;

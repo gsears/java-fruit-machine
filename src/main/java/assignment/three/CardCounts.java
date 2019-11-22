@@ -73,6 +73,13 @@ public class CardCounts {
         }
     }
 
+    public void add(Card card, int count) {
+        cardCountMap.put(card, count);
+        // Maybe we overwrote the card with the maximum count?
+        // Reset it to be sure.
+        setMaximum();
+    }
+
     // Get the count of a particular card
     public int getCount(Card card) {
         return cardCountMap.get(card);
@@ -110,6 +117,10 @@ public class CardCounts {
     // data into nice message strings).
     public Set<Map.Entry<Card, Integer>> getEntrySet() {
         return cardCountMap.entrySet();
+    }
+
+    public Set<Card> getCardSet() {
+        return cardCountMap.keySet();
     }
 
     // Scan through the current map and get the current maximum card count.

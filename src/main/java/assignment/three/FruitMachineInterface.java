@@ -9,18 +9,25 @@ package assignment.three;
  * Also, by creating a model which is an interface, it can be replaced without breaking any
  * Controllers / Views, as long as the new class guarantees the methods below.
  * 
- * Perhaps in the future this could be made even more generic, with more generic method names that
- * apply to all 'arcade games'.
  */
 
 public interface FruitMachineInterface {
 
-    // (TOTALLY IMPORTANT AND NECESSARY!) FRUIT MACHINE METHODS
-    // GUARANTEED FOR ANY CONTROLLER NO MATTER WHAT THE MACHINE.
+    // This is pretty essential for a fruit machine...
 
     public void spin();
 
+    // These are used to customise machines / change difficulty.
+
+    public void setStartingBalance(int startingBalance);
+
+    public void setLosingBalance(int losingBalance);
+
+    public void setWinningBalance(int winningBalance);
+
     public void setPayouts(Payouts payouts);
+
+    // These are used for observer / model requests
 
     public Card[] getCards();
 
@@ -36,7 +43,7 @@ public interface FruitMachineInterface {
 
     public void reset();
 
-    // OBSERVER METHODS
+    // These are used to register / remove observers
 
     public void registerObserver(GameStateObserver o);
 

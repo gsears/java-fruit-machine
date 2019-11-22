@@ -7,8 +7,7 @@ import javax.swing.JPanel;
  * PaddedJPanel.java | Gareth Sears - 2493194
  * 
  * A subclass of JPanel that makes it easier to set padding all around the component using an empty
- * border of a specified size (I'm convinced that internally this wraps the panel in a BorderLayout
- * and fills it accordingly, so feels like a clean implementation.)
+ * border of a specified size (feels like a clean implementation...)
  */
 
 @SuppressWarnings("serial")
