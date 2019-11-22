@@ -5,8 +5,9 @@ import java.util.Random;
 /**
  * Spinner.java | Gareth Sears - 2493194
  * 
- * A spinner returns a random enum from the Card class. Models what you see on a slot machine!
+ * A spinner returns a random enum from the Card class.
  */
+
 public class Spinner {
 
     // Static to avoid duplicating across spinners...

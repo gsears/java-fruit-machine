@@ -6,9 +6,9 @@ package assignment.three;
  * Contains a set of spinners, representing the 'meat' of a fruit machine! Stores various objects
  * for outside classes to interact with.
  * 
- * The most important of these are the card array (the array of what is actually displayed) and a
- * CardCombination which stores the card counts in a cache for processing to calculate winning
- * combos and the such.
+ * The most important of these are the card array (an array of what is actually displayed) and a
+ * CardCount object which stores the card counts in a cache to calculate winning combos and for
+ * displays.
  */
 
 public class SpinnerSet {
@@ -21,15 +21,17 @@ public class SpinnerSet {
 
     public SpinnerSet(int count) {
         this.count = count;
+
+        // Initialise 'count' number of spinners.
         spinners = new Spinner[count];
         cards = new Card[count];
 
-        // Create spinner instances
+        // Create spinner instances.
         for (int i = 0; i < count; i++) {
             spinners[i] = new Spinner();
         }
 
-        spin(); // initialise the spinners with random values
+        spin(); // Initialise card array and counts.
     }
 
     public void spin() {

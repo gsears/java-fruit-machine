@@ -6,6 +6,7 @@ package assignment.three;
  * This interface is used to update observers (in this case, any controllers) of any spinner set
  * state changes within the FruitMachine model. Useful for displaying payouts / card combinations.
  */
+
 public interface SpinnerSetObserver {
     void updateSpinners();
 }

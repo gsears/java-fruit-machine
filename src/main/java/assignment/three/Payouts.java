@@ -8,83 +8,76 @@ import java.util.Map.Entry;
 /**
  * Payouts.java | Gareth Sears - 2493194
  * 
- * An object for encapsulating payouts for different machines.
- * 
+ * An object for encapsulating different payouts for different machines.
  */
+
 public class Payouts {
 
-    private Integer maxCardCount;
+    // ASSIGNMENT FUNCTIONALITY
+    // Fixed combo count has fixed payout, regardless of card type.
+
+    // Store payouts by count in a hashmap.
     private Map<Integer, Integer> payoutsByCount = new HashMap<Integer, Integer>();
 
-    // Add a payout to the hashmap.
+    // Add a card count to the map, with its payout.
     public void addPayout(int cardCount, int payout) {
-        // Store the highest card count possible
-        if (maxCardCount == null || cardCount > maxCardCount) {
-            maxCardCount = cardCount;
-        }
-        // Add the card count and payout to a map
         payoutsByCount.put(cardCount, payout);
     }
 
     public int getPayout(int cardCount) {
-        // If we have a payout for that count, return it.
+        // If the card count has a payout, get it.
         if (payoutsByCount.keySet().contains(cardCount)) {
             return payoutsByCount.get(cardCount);
-        }
-        // If the card count is greater than max payout count, return the highest payout we can.
-        if (cardCount > maxCardCount) {
-            return payoutsByCount.get(maxCardCount);
         } else {
-            return 0; // No payout.
+            return 0;
         }
     }
 
-    // ADDED FOR COMPLETENESS / PORTFOLIO, NOT FOR ASSIGNMENT
-    // "predict what might change and encapsulate it"
+    // NOT NECESSARY FOR ASSIGNMENT - BUT FOR STANDARD FRUIT MACHINE FUNCTIONALTIY.
+    // Different card combinations can have different payouts.
+    // E.g. '{ace: 1} = 5', '{ace: 2} = 10', '{ace: 2, king: 1} = 30'
 
-    // Used to return payouts by a combination of cards.
-    // E.g. 'one cherry = 2', 'two cherries and 1 bar = 10'
+    // Store payouts by card combination in a hashmap.
     private static Map<CardCounts, Integer> payoutsByCombo = new HashMap<CardCounts, Integer>();
 
-    // Add a combination of card counts that pays out.
+    // Add a card combination to the map, with its payout.
     public void addPayout(CardCounts cardCountCombo, int payout) {
         payoutsByCombo.put(cardCountCombo, payout);
     }
 
-    // Get the payout from a combination of card counts.
+    // If the combination has a payout, get it.
     public int getPayout(CardCounts cardCountCombo) {
 
         int payout = 0;
 
-        // Loop through each of the possible payout combinations.
+        // Loop through each of the possible winning combinations.
         for (Entry<CardCounts, Integer> entry : payoutsByCombo.entrySet()) {
+
             CardCounts winningCountCombo = entry.getKey();
 
-            // Check if the cards exist in a winning payout combo.
+            // Check if all the relevant winning combo cards are in the combination,
+            // and their counts match.
             Iterator<Card> cards = winningCountCombo.getCardSet().iterator();
             boolean matchesCombo = true;
 
             while (matchesCombo && cards.hasNext()) {
                 Card card = cards.next();
 
-                System.out.println(card);
-
-                // If the card exists, and it matches the count in the winning combo, continue.
                 if (!cardCountCombo.contains(card)
                         || winningCountCombo.getCount(card) != cardCountCombo.getCount(card)) {
 
-                    // Otherwise break out of the loop.
+                    // Otherwise break out of the loop, no point in continuing.
                     matchesCombo = false;
                 }
             }
 
-            // If the card combo indeed matches a winning combo
+            // If the card combo under consideration matches a winning combo
             if (matchesCombo) {
-                System.out.println("Winner: " + cardCountCombo);
                 // Get the payout.
                 int payoutForCombo = payoutsByCombo.get(winningCountCombo);
                 // If the payout is greater than the current highest (for example, a two cherry
-                // combo is better than a previously found one cherry combo) set the highest payout.
+                // combo is better than a previously found one cherry combo), set the highest
+                // payout.
                 if (payoutForCombo > payout) {
                     payout = payoutForCombo;
                 }
@@ -94,7 +87,7 @@ public class Payouts {
         return payout;
     }
 
-    // TESTS FOR EXTREME FUNCTIONALITY
+    // TESTS FOR ABOVE
 
     // public static void main(String[] args) {
     // Payouts payouts = new Payouts();
