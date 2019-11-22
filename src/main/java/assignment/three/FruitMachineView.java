@@ -20,7 +20,7 @@ import javax.swing.JPanel;
  * avoid passing around events, only the Spinner panel was encapsulated into another class (as it
  * depends on the number of spinners and the other panels are 'fixed').
  * 
- * It abstracts the different panel creation into private methods and also provides methods for a
+ * It encapsulates the different panel creation into private methods and also provides methods for a
  * controller to set values.
  */
 
@@ -50,7 +50,6 @@ public class FruitMachineView extends JFrame {
         this.controller = controller; // Hook up the controller.
 
         // Main Window Layout
-
         setSize(600, 350);
         setLocation(10, 10);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -72,18 +71,18 @@ public class FruitMachineView extends JFrame {
 
     private void createMessagePanel() {
 
-        // Initialise Panel with padding.
+        // New instance of padded panel.
         messagePanel = new PaddedJPanel(PANEL_PADDING);
 
-        // Set Layout. Uses box layout for flexi-vertical alignment with 'glue'.
+        // Set layout. Uses box layout for flexi-vertical alignment with 'glue'.
         messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.PAGE_AXIS));
 
-        // Create instances
+        // Create instances of components
         balanceDisplay = new JLabel();
         messageDisplay = new JLabel();
         victoryDisplay = new JLabel();
 
-        // Add to panel
+        // Add to components panel
         messagePanel.add(balanceDisplay);
         messagePanel.add(Box.createVerticalGlue()); // Adds spacer
         messagePanel.add(messageDisplay);
@@ -93,7 +92,7 @@ public class FruitMachineView extends JFrame {
 
     private void createSpinnerPanel() {
 
-        // Initialise Panel
+        // New instance of spinner panel
         spinnerPanel = new SpinnerSetView(controller.getSpinnerCount());
         // Set padding
         spinnerPanel.setPadding(PANEL_PADDING);
@@ -101,20 +100,20 @@ public class FruitMachineView extends JFrame {
 
     private void createButtonPanel() {
 
-        // Initialise Panels
-        // Uses a wrapper to auto size border and centralise inner panel.
+        // New instance of padded panel as a wrapper.
+        // Uses GridBagLayout to auto size border and centralise button panel.
         buttonPanelWrapper = new PaddedJPanel(PANEL_PADDING);
-        buttonPanel = new JPanel(new GridLayout(2, 1));
-
-        // Set layout of wrapper to GridBag for aforementioned auto padding.
         buttonPanelWrapper.setLayout(new GridBagLayout());
 
-        // Create instances
+        // New instance of panel for buttons. Grid layout to 'stretch' them.
+        buttonPanel = new JPanel(new GridLayout(2, 1));
+
+        // Create instances of components
         newGameButton = new JButton("New Game");
         spinButton = new JButton("Spin");
 
-        // Add listeners
-        // Uses anonymous classes as this is a concise convention when listeners have a one-to-one
+        // Add button action event listeners
+        // Uses anonymous classes (concise convention when listeners have a one-to-one
         // relationship with components.
 
         newGameButton.addActionListener(new ActionListener() {
