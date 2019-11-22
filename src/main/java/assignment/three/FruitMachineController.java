@@ -36,6 +36,8 @@ public class FruitMachineController
         model.registerObserver((GameStateObserver) this);
     }
 
+    // PUBLIC METHODS for VIEW
+
     public void addView(FruitMachineView view) {
         this.view = view;
         updateAll(); // Initialise view components from the model data on add.
@@ -54,26 +56,8 @@ public class FruitMachineController
         return model.getSpinnerCount();
     }
 
-    // Enable the spin button, disable the 'reset' button.
-    public void enablePlay() {
-        view.setEnabledNewGameButton(false);
-        view.setEnabledSpinButton(true);
-    }
+    // PUBLIC METHODS for MODEL OBSERVER UPDATES
 
-    // Disable the spin button, for game over states. Enable the 'reset' button.
-    public void disablePlay() {
-        view.setEnabledNewGameButton(true);
-        view.setEnabledSpinButton(false);
-    }
-
-    // Update ALL view components (for resets / initialisation).
-    public void updateAll() {
-        updateGameState();
-        updateSpinners();
-        updateBalance();
-    }
-
-    // When the model changes game state, this method is called.
     @Override
     public void updateGameState() {
         GameState gameState = model.getGameState();
@@ -95,8 +79,6 @@ public class FruitMachineController
         }
     }
 
-    // When the model spinners change, this method is called. It is used to set the cards and also
-    // the display message based on the card combination.
     @Override
     public void updateSpinners() {
 
@@ -130,11 +112,30 @@ public class FruitMachineController
         }
     }
 
-    // When the model balance is changed, this method is called. There is a subtle difference with
-    // spinners, as this will not be called if the 'payout' is 0 to avoid redundant updates.
     @Override
     public void updateBalance() {
         view.setBalanceDisplay("Balance is: £" + model.getPlayerBalance());
+    }
+
+    // PRIVATE HELPER METHODS
+
+    // Enable the spin button, disable the 'reset' button.
+    private void enablePlay() {
+        view.setEnabledNewGameButton(false);
+        view.setEnabledSpinButton(true);
+    }
+
+    // Disable the spin button, for game over states. Enable the 'reset' button.
+    private void disablePlay() {
+        view.setEnabledNewGameButton(true);
+        view.setEnabledSpinButton(false);
+    }
+
+    // Update ALL view components (for resets / initialisation).
+    private void updateAll() {
+        updateGameState();
+        updateSpinners();
+        updateBalance();
     }
 
     // This private method converts a scoring combination (the relevant cards and their counts) to
@@ -159,6 +160,4 @@ public class FruitMachineController
 
         return output.substring(0, output.length() - 2); // Remove the final comma and space.
     }
-
-
 }
