@@ -30,7 +30,7 @@ public interface FruitMachineInterface {
 
     public int getPlayerBalance();
 
-    public CardCombination getLastScoringCombo();
+    public CardCounts getLastScoringCounts();
 
     public int getLastPayout();
 

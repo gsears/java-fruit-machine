@@ -2,56 +2,54 @@ package assignment.three;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * CardCombination.java | Gareth Sears - 2493194
+ * CardCounts.java | Gareth Sears - 2493194
  * 
- * This class is used for caching card counts and returning them in useful forms. The rationale was
- * that different combinations of card counts are what pays out, rather than 'in a row', and this
- * class would be useful for dealing with any combination of cards, avoiding hard coded win
- * conditions. It is designed to work with the Payouts class, which returns the appropriate 'payout'
- * for the appropriate combination.
+ * This class is used for caching card counts and returning them in useful forms.
  * 
- * Fundamentally, it is an interface to a HashMap with some useful helper functions. For example,
- * the ability to filter by card or count. Storing these in a class also means a consistant
+ * Fundamentally, it is an interface to a HashMap with some useful helper methods. For example, the
+ * ability to filter by card or count (in the assignment's case, getting any combinations that
+ * contain a joker, or the highest card counts). Storing these in a class also means a useful
  * interface with controlers outside the model.
  * 
  * EXAMPLE USAGE:
  * 
- * CardCombination cardCounter = new CardCombination(); 
- * cardCounter.add(Card.JOKER);
- * cardCounter.add(Card.JOKER); 
- * cardCounter.add(Card.ACE); 
- * cardCounter.add(Card.QUEEN);
+ * CardCounts cardCounts = new CardCounts(); 
+ * cardCounts.add(Card.JOKER);
+ * cardCounts.add(Card.JOKER); 
+ * cardCounts.add(Card.ACE); 
+ * cardCounts.add(Card.QUEEN);
  * 
- * System.out.println(cardCounter); // Map: {Queen=1, Ace=1, Joker=2} MaxCount: 2
+ * System.out.println(cardCounts); // Map: {Queen=1, Ace=1, Joker=2} MaxCount: 2
  * 
- * CardCombination cardsWithCountOfOne = cardCounter.filterByCount(x -> x == 1); 
+ * CardCounts cardsWithCountOfOne = cardCounts.filterByCount(x -> x == 1); 
  * // Map: {Queen=1, Ace=1} MaxCount: 1
  * 
- * CardCombination cardsWithMaxCount = cardCounter.filterByCount(x -> x == cardCounter.getMaxCardCount()); 
- * // Map: {Joker=2} MaxCount: 2
+ * CardCounts cardsWithMaxCount = cardCounts.filterByCount(x -> x == cardCounts.getMaxCardCount()); 
+ * // Map: {Joker=2} MaxCount: 2;
  * 
- * CardCombination jokerAndAceCardCounts = cardCounter.filterByCard(x -> x == Card.JOKER || x == Card.ACE); 
- * // Map: {Ace=1, Joker=2} MaxCount:
+ * CardCounts jokerAndAceCardCounts = cardCounts.filterByCard(x -> x == Card.JOKER || x == Card.ACE); 
+ * // Map: {Ace=1, Joker=2} MaxCount: 2
  * 
  */
-public class CardCombination {
+public class CardCounts {
 
     private Map<Card, Integer> cardCountMap = new HashMap<Card, Integer>();
     private int maxCardCount = 0;
 
-    public CardCombination() {
+    public CardCounts() {
     }
 
-    // This is private because it is only used to generate new card combos following 
+    // This is private because it is only used to generate new card combos following
     // filter operations. This immutability avoids mutating the original accidentally.
-    private CardCombination(Map<Card, Integer> cardCountMap) {
+    private CardCounts(Map<Card, Integer> cardCountMap) {
         this.cardCountMap = cardCountMap;
         // Traverse the new map and set the maximum card count.
-        setMaximum(); 
+        setMaximum();
     }
 
     public void add(Card card) {
@@ -89,7 +87,7 @@ public class CardCombination {
     public void remove(Card card) {
         if (cardCountMap.get(card) == maxCardCount) {
             cardCountMap.remove(card);
-            // Maybe we deleted the card with the maximum count? 
+            // Maybe we deleted the card with the maximum count?
             // Reset it to be sure.
             setMaximum();
         } else {
@@ -108,9 +106,10 @@ public class CardCombination {
         return maxCardCount;
     }
 
-    // Return the map for any further processing.
-    public Map<Card, Integer> getCardCountMap() {
-        return cardCountMap;
+    // Return the entries for any further processing (useful in the controller for formatting the
+    // data into nice message strings).
+    public Set<Map.Entry<Card, Integer>> getEntrySet() {
+        return cardCountMap.entrySet();
     }
 
     // Scan through the current map and get the current maximum card count.
@@ -126,7 +125,7 @@ public class CardCombination {
     // This would be useful for getting scoring combinations related to a specific count.
     // In the assignment's case, the maximum card count(s).
 
-    public CardCombination filterByCount(Predicate<? super Integer> filterFunction) {
+    public CardCounts filterByCount(Predicate<? super Integer> filterFunction) {
         Map<Card, Integer> filteredMap = cardCountMap.entrySet().stream()
                 // Filter the stream by the filterFunction acting on counts
                 .filter(x -> filterFunction.test(x.getValue()))
@@ -134,14 +133,14 @@ public class CardCombination {
                 .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
 
         // Immutable
-        return new CardCombination(filteredMap);
+        return new CardCounts(filteredMap);
     }
 
     // Use a lambda function to get specific combinations of cards by their counts.
     // This would be useful for getting scoring combinations related to a specific card.
     // In the assignment's case: Card.JOKER.
 
-    public CardCombination filterByCard(Predicate<? super Card> filterFunction) {
+    public CardCounts filterByCard(Predicate<? super Card> filterFunction) {
         Map<Card, Integer> filteredMap = cardCountMap.entrySet().stream()
                 // Filter the stream by the filterFunction acting on cards
                 .filter(x -> filterFunction.test(x.getKey()))
@@ -149,7 +148,7 @@ public class CardCombination {
                 .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
 
         // Immutable
-        return new CardCombination(filteredMap);
+        return new CardCounts(filteredMap);
     }
 
     // For debugging.

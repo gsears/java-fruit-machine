@@ -34,7 +34,7 @@ public class FruitMachine implements FruitMachineInterface {
 
     private int spinnerCount;
     private int lastPayout; // The most recent payout, to send to controller
-    private CardCombination lastScoringCombo; // The last card combination to send to controller
+    private CardCounts lastScoringCounts; // The last card combination to send to controller
 
     public static void main(final String[] args) {
 
@@ -85,7 +85,7 @@ public class FruitMachine implements FruitMachineInterface {
             spinners.spin();
 
             // get current card counts
-            CardCombination cardCounts = spinners.getCardCounts();
+            CardCounts cardCounts = spinners.getCardCounts();
 
             // If there's a JOKER in the current card counts
             if (cardCounts.contains(Card.JOKER)) {
@@ -94,14 +94,14 @@ public class FruitMachine implements FruitMachineInterface {
                 // Note: JOKER_MULTIPLIER is negative in this case.
                 lastPayout = jokerCount * JOKER_MULTIPLIER;
                 // Just add the joker counts to the scoring combo.
-                lastScoringCombo = cardCounts.filterByCard(x -> x == Card.JOKER);
+                lastScoringCounts = cardCounts.filterByCard(x -> x == Card.JOKER);
 
             } else {
                 int highestCount = cardCounts.getMaxCardCount();
                 // Set the payout (could be 0)
                 lastPayout = payouts.getPayout(highestCount);
                 // Add card counts to the scoring combo.
-                lastScoringCombo = cardCounts.filterByCount(x -> x == highestCount);
+                lastScoringCounts = cardCounts.filterByCount(x -> x == highestCount);
             }
             // Update anything observing the spinners (in the controller)
             notifySpinnerObservers();
@@ -150,8 +150,8 @@ public class FruitMachine implements FruitMachineInterface {
     }
 
     @Override
-    public CardCombination getLastScoringCombo() {
-        return lastScoringCombo;
+    public CardCounts getLastScoringCounts() {
+        return lastScoringCounts;
     }
 
     @Override

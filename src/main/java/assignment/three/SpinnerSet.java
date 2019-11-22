@@ -18,7 +18,7 @@ public class SpinnerSet {
     private Card[] cards;
 
     // This object stores the card counts
-    CardCombination cardCounts = new CardCombination();
+    CardCounts cardCounts = new CardCounts();
 
     public SpinnerSet(int count) {
         this.count = count;
@@ -57,7 +57,7 @@ public class SpinnerSet {
     }
 
     // Get the object that holds the card counts (for scoring combinations etc.)
-    public CardCombination getCardCounts() {
+    public CardCounts getCardCounts() {
         return cardCounts;
     }
 }
