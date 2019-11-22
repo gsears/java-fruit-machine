@@ -11,6 +11,19 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * FruitMachineView.java | Gareth Sears - 2493194
+ * 
+ * The view layer of the app.
+ * 
+ * This consists of a JFrame main window and several panels. Given the relative simplicity, and to
+ * avoid passing around events, only the Spinner panel was encapsulated into another class (as it
+ * depends on the number of spinners and the other panels are 'fixed').
+ * 
+ * It abstracts the different panel creation into private methods and also provides methods for a
+ * controller to set values.
+ */
+
 @SuppressWarnings("serial")
 public class FruitMachineView extends JFrame {
 
@@ -18,23 +31,28 @@ public class FruitMachineView extends JFrame {
 
     FruitMachineController controller;
 
+    // Components for Button panel.
     PaddedJPanel buttonPanelWrapper;
     JPanel buttonPanel;
     JButton newGameButton;
     JButton spinButton;
 
+    // Components for Message panel.
     PaddedJPanel messagePanel;
     JLabel balanceDisplay;
     JLabel messageDisplay;
     JLabel victoryDisplay;
 
+    // An encapsulated Spinner panel.
     SpinnerSetView spinnerPanel;
 
     public FruitMachineView(FruitMachineController controller) {
-        this.controller = controller;
+        this.controller = controller; // Hook up the controller.
 
-        // Layout
+        // Main Window Layout
+
         setSize(600, 350);
+        setLocation(10, 10);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(2, 2));
 
@@ -53,10 +71,11 @@ public class FruitMachineView extends JFrame {
     }
 
     private void createMessagePanel() {
-        // Initialise Panel with padding
+
+        // Initialise Panel with padding.
         messagePanel = new PaddedJPanel(PANEL_PADDING);
 
-        // Set Layout
+        // Set Layout. Uses box layout for flexi-vertical alignment with 'glue'.
         messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.PAGE_AXIS));
 
         // Create instances
@@ -73,6 +92,7 @@ public class FruitMachineView extends JFrame {
     }
 
     private void createSpinnerPanel() {
+
         // Initialise Panel
         spinnerPanel = new SpinnerSetView(controller.getSpinnerCount());
         // Set padding
@@ -80,11 +100,13 @@ public class FruitMachineView extends JFrame {
     }
 
     private void createButtonPanel() {
+
         // Initialise Panels
+        // Uses a wrapper to auto size border and centralise inner panel.
         buttonPanelWrapper = new PaddedJPanel(PANEL_PADDING);
         buttonPanel = new JPanel(new GridLayout(2, 1));
 
-        // Set layout of wrapper to auto size border and centralise inner panel
+        // Set layout of wrapper to GridBag for aforementioned auto padding.
         buttonPanelWrapper.setLayout(new GridBagLayout());
 
         // Create instances
@@ -92,9 +114,8 @@ public class FruitMachineView extends JFrame {
         spinButton = new JButton("Spin");
 
         // Add listeners
-
-        // Uses anonymous classes as this is a concise convention
-        // when listeners have a one-to-one relationship with components.
+        // Uses anonymous classes as this is a concise convention when listeners have a one-to-one
+        // relationship with components.
 
         newGameButton.addActionListener(new ActionListener() {
             @Override
@@ -118,7 +139,8 @@ public class FruitMachineView extends JFrame {
         buttonPanelWrapper.add(buttonPanel);
     }
 
-    // Methods for controller.
+    // Set methods for controllers.
+
     public void setSpinners(Card[] cards) {
         spinnerPanel.setCards(cards);
     }

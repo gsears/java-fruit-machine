@@ -1,5 +1,16 @@
 package assignment.three;
 
+/**
+ * SpinnerSet.java | Gareth Sears - 2493194
+ * 
+ * Contains a set of spinners, representing the 'meat' of a fruit machine! Stores various objects
+ * for outside classes to interact with.
+ * 
+ * The most important of these are the card array (the array of what is actually displayed) and a
+ * CardCombination which stores the card counts in a cache for processing to calculate winning
+ * combos and the such.
+ */
+
 public class SpinnerSet {
 
     private int count;

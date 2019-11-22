@@ -5,6 +5,39 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * CardCombination.java | Gareth Sears - 2493194
+ * 
+ * This class is used for caching card counts and returning them in useful forms. The rationale was
+ * that different combinations of card counts are what pays out, rather than 'in a row', and this
+ * class would be useful for dealing with any combination of cards, avoiding hard coded win
+ * conditions. It is designed to work with the Payouts class, which returns the appropriate 'payout'
+ * for the appropriate combination.
+ * 
+ * Fundamentally, it is an interface to a HashMap with some useful helper functions. For example,
+ * the ability to filter by card or count. Storing these in a class also means a consistant
+ * interface with controlers outside the model.
+ * 
+ * EXAMPLE USAGE:
+ * 
+ * CardCombination cardCounter = new CardCombination(); 
+ * cardCounter.add(Card.JOKER);
+ * cardCounter.add(Card.JOKER); 
+ * cardCounter.add(Card.ACE); 
+ * cardCounter.add(Card.QUEEN);
+ * 
+ * System.out.println(cardCounter); // Map: {Queen=1, Ace=1, Joker=2} MaxCount: 2
+ * 
+ * CardCombination cardsWithCountOfOne = cardCounter.filterByCount(x -> x == 1); 
+ * // Map: {Queen=1, Ace=1} MaxCount: 1
+ * 
+ * CardCombination cardsWithMaxCount = cardCounter.filterByCount(x -> x == cardCounter.getMaxCardCount()); 
+ * // Map: {Joker=2} MaxCount: 2
+ * 
+ * CardCombination jokerAndAceCardCounts = cardCounter.filterByCard(x -> x == Card.JOKER || x == Card.ACE); 
+ * // Map: {Ace=1, Joker=2} MaxCount:
+ * 
+ */
 public class CardCombination {
 
     private Map<Card, Integer> cardCountMap = new HashMap<Card, Integer>();
@@ -13,10 +46,12 @@ public class CardCombination {
     public CardCombination() {
     }
 
-    // This is only used to generate new card combos following filter operations
+    // This is private because it is only used to generate new card combos following 
+    // filter operations. This immutability avoids mutating the original accidentally.
     private CardCombination(Map<Card, Integer> cardCountMap) {
         this.cardCountMap = cardCountMap;
-        setMaximum(); // Traverse the map and set the new maximum card count.
+        // Traverse the new map and set the maximum card count.
+        setMaximum(); 
     }
 
     public void add(Card card) {
@@ -33,46 +68,53 @@ public class CardCombination {
         } else {
             // Add the card to the cache and set its count to one.
             cardCountMap.put(card, 1);
-            // Set the max count to 1 if its the first element...
+            // Set the max count to 1 if its the first card added.
             if (maxCardCount == 0) {
                 maxCardCount = 1;
             }
         }
     }
 
+    // Get the count of a particular card
     public int getCount(Card card) {
         return cardCountMap.get(card);
     }
 
+    // Check to see if a particular card is present in the set (i.e. JOKER)
     public boolean contains(Card card) {
         return cardCountMap.containsKey(card);
     }
 
+    // Remove a card from the set.
     public void remove(Card card) {
         if (cardCountMap.get(card) == maxCardCount) {
             cardCountMap.remove(card);
-            // Maybe we deleted the card with the maximum count? Reset it to be sure.
+            // Maybe we deleted the card with the maximum count? 
+            // Reset it to be sure.
             setMaximum();
         } else {
             cardCountMap.remove(card);
         }
     }
 
+    // Clear the cache contents and reset the max count.
     public void clear() {
         cardCountMap.clear();
         maxCardCount = 0;
     }
 
+    // Get the current maximum count.
     public int getMaxCardCount() {
         return maxCardCount;
     }
 
+    // Return the map for any further processing.
     public Map<Card, Integer> getCardCountMap() {
         return cardCountMap;
     }
 
+    // Scan through the current map and get the current maximum card count.
     private void setMaximum() {
-        // Find the new maximum card count inside the cardCountMap
         maxCardCount = cardCountMap.entrySet().stream()
                 // Get the counts of each card
                 .mapToInt(x -> x.getValue())
@@ -80,35 +122,10 @@ public class CardCombination {
                 .max().orElse(0);
     }
 
-    /*
-     * --------------- FILTER FUNCTIONS ----------------
-     * 
-     * Return card combinations based on a filter function. Useful for outputing 'winning'
-     * combinations, or just the jokers, but allowing easy modification for future machines.
-     * 
-     * SEE THE FOLLOWING FOR EXAMPLE USE:
-     * 
-     * CardCombination test = new CardCombination(); 
-     * test.add(Card.JOKER); 
-     * test.add(Card.JOKER);
-     * test.add(Card.ACE); 
-     * test.add(Card.QUEEN);
-     * 
-     * System.out.println(test); // Map: {Queen=1, Ace=1, Joker=2} MaxCount: 2
-     * 
-     * // Return only the single cards in the spinners.
-     * CardCombination filteredByCount = test.filterByCount(x -> x == 1); 
-     * // Map: {Queen=1, Ace=1} MaxCount: 1
-     * 
-     * // Return cards which appear the most in the spinners.
-     * CardCombination filteredByCount = test.filterByCount(x -> x == test.getMaxCardCount()); 
-     * // Map: {Joker=2} MaxCount: 2
-     * 
-     * // Return cards which are either Jokers or Aces.
-     * CardCombination filteredByCard = test.filterByCard(x -> x == Card.JOKER || x == Card.ACE); 
-     * // Map: {Ace=1, Joker=2} MaxCount: 2
-     * 
-     */
+    // Use a lambda function to get specific combinations of cards by their counts.
+    // This would be useful for getting scoring combinations related to a specific count.
+    // In the assignment's case, the maximum card count(s).
+
     public CardCombination filterByCount(Predicate<? super Integer> filterFunction) {
         Map<Card, Integer> filteredMap = cardCountMap.entrySet().stream()
                 // Filter the stream by the filterFunction acting on counts
@@ -119,6 +136,10 @@ public class CardCombination {
         // Immutable
         return new CardCombination(filteredMap);
     }
+
+    // Use a lambda function to get specific combinations of cards by their counts.
+    // This would be useful for getting scoring combinations related to a specific card.
+    // In the assignment's case: Card.JOKER.
 
     public CardCombination filterByCard(Predicate<? super Card> filterFunction) {
         Map<Card, Integer> filteredMap = cardCountMap.entrySet().stream()
@@ -131,6 +152,7 @@ public class CardCombination {
         return new CardCombination(filteredMap);
     }
 
+    // For debugging.
     @Override
     public String toString() {
         return String.format("%s Map: %s MaxCount: %d", super.toString(), cardCountMap.toString(),
