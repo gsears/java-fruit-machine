@@ -7,8 +7,8 @@ package assignment.three;
  * so the register / remove methods need to be guaranteed.
  * 
  * Also, by creating a model which is an interface, it can be replaced without breaking any
- * Controllers / Views, as long as the new class guarantees the methods below.
- * 
+ * Controllers / Views, as long as the new class guarantees the methods below. This was learned from
+ * the MVC chapter in Head First Design Patterns.
  */
 
 public interface FruitMachineInterface {
