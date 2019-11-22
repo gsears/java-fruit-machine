@@ -105,15 +105,17 @@ public class FruitMachine implements FruitMachineInterface {
             if (cardCounts.contains(Card.JOKER)) {
 
                 lastPayout = cardCounts.getCount(Card.JOKER) * JOKER_MULTIPLIER; // will be < 0
+
+                // Filter the results to only include 'scoring' combinations.
                 lastScoringCounts = cardCounts.filterByCard(x -> x == Card.JOKER);
 
             } else {
+
                 int highestCount = cardCounts.getMaxCardCount();
+                lastPayout = payouts.getPayout(highestCount); // Returns 0 if not a scoring count.
+
+                // Filter the results to only include 'scoring' combinations.
                 lastScoringCounts = cardCounts.filterByCount(x -> x == highestCount);
-                // This is added for if spinners > 3 and there is more than 1 winning combo.
-                int scoringCombinationCount = lastScoringCounts.getCardSet().size();
-                // Payouts will return 0 if there isn't a payout for that count.
-                lastPayout = payouts.getPayout(highestCount) * scoringCombinationCount;
             }
             
             notifySpinnerObservers(); // Update any models / controllers with new spinner state
@@ -127,8 +129,8 @@ public class FruitMachine implements FruitMachineInterface {
     }
 
     private void updatePlayerBalance() {
-        // Only do something if there's a change.
-        if (lastPayout != 0) {
+        
+        if (lastPayout != 0) { // Only do something if there's a change.
             
             int newBalance = playerBalance.change(lastPayout);
             notifyBalanceObservers(); // Update any models / controllers with new balance state
