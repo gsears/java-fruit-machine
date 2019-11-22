@@ -12,8 +12,7 @@ import java.util.ArrayList;
  * of spinners, winning / losing points.
  */
 public class FruitMachine implements FruitMachineInterface {
-    // Implements an interface to ensure compatability with controllers
-
+    
     // Defaults for all machines
     private static final int DEFAULT_NUMBER_OF_SPINNERS = 3;
     private static final int DEFAULT_STARTING_BALANCE = 100;
