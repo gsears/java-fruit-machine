@@ -66,16 +66,6 @@ public class FruitMachineController
         view.setEnabledSpinButton(false);
     }
 
-    // Update the view's message display
-    public void setMessageDisplay(String message) {
-        view.setMessageDisplay(message);
-    }
-
-    // Update the view's victory display
-    public void setVictoryDisplay(String message) {
-        view.setVictoryDisplay(message);
-    }
-
     // Update ALL view components (for resets / initialisation).
     public void updateAll() {
         updateGameState();
@@ -90,18 +80,18 @@ public class FruitMachineController
 
         if (gameState == GameState.WON) {
             disablePlay(); // Disable play button
-            setVictoryDisplay(VICTORY_MESSAGE); // Display victory message
+            view.setVictoryDisplay(VICTORY_MESSAGE); // Display victory message
         }
         if (gameState == GameState.LOST) {
             disablePlay(); // Disable play button
-            setVictoryDisplay(LOSE_MESSAGE); // Display lose message
+            view.setVictoryDisplay(LOSE_MESSAGE); // Display lose message
         }
 
         // This is only fired when the model resets, i.e. at the start of a new game.
         if (gameState == GameState.PLAY) {
             enablePlay(); // Enable spin buttons
-            setMessageDisplay(WELCOME_MESSAGE);
-            setVictoryDisplay("");
+            view.setMessageDisplay(WELCOME_MESSAGE);
+            view.setVictoryDisplay("");
         }
     }
 
@@ -136,7 +126,7 @@ public class FruitMachineController
             String cardCountString = convertCardCountsToText(cardCounts);
 
             // SET THE MESSAGE DISPLAY to CARD COUNTS and PAYOUT
-            setMessageDisplay(String.format("%s. %s.", cardCountString, payoutString));
+            view.setMessageDisplay(String.format("%s. %s.", cardCountString, payoutString));
         }
     }
 
