@@ -30,5 +30,5 @@ dependencies {
 
 application {
     // Define the main class for the application
-    mainClassName = 'assignment.three.App'
+    mainClassName = 'assignment.three.FruitMachine'
 }
