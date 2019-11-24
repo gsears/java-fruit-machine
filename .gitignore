@@ -4,6 +4,10 @@
 # Ignore Gradle build output directory
 build
 
+# Ignore Intellij cache directory and generated files
+.idea
+*.iml
+
 # Compiled class file
 *.class
 
