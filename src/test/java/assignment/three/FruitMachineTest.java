@@ -7,8 +7,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class FruitMachineTest {
-    @Test
-    public void testAppHasAGreeting() {
-        FruitMachine classUnderTest = new FruitMachine();
-    }
+    // @Test
+    // public void firstTest() {
+
+    // }
 }
