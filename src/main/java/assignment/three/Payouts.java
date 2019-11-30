@@ -20,8 +20,9 @@ public class Payouts {
     private Map<Integer, Integer> payoutsByCount = new HashMap<Integer, Integer>();
 
     // Add a card count to the map, with its payout.
-    public void addPayout(int cardCount, int payout) {
+    public Payouts addPayout(int cardCount, int payout) {
         payoutsByCount.put(cardCount, payout);
+        return this; // For method chaining addPayouts for convenience
     }
 
     public int getPayout(int cardCount) {

@@ -16,11 +16,8 @@ public class FruitMachine implements FruitMachineInterface {
 
     public static void main(final String[] args) {
 
-        // This is set outside of the class, as different machines may want different
-        // payouts for different combinations.
-        Payouts payouts = new Payouts();
-        payouts.addPayout(2, 20); // TWO OF A KIND PAYOUT
-        payouts.addPayout(3, 50); // THREE OF A KIND PAYOUT
+        Payouts payouts = new Payouts().addPayout(2, 20) // TWO OF A KIND PAYOUT
+                .addPayout(3, 50); // THREE OF A KIND PAYOUT
 
         Card[] cards = {new Card("Joker"), new Card("Jack"), new Card("Queen"), new Card("King"),
                 new Card("Ace")};
@@ -34,7 +31,6 @@ public class FruitMachine implements FruitMachineInterface {
         FruitMachineView fruitMachineView = new FruitMachineView(fruitMachineController);
 
         fruitMachineController.addView(fruitMachineView);
-
     }
 
     // Class Body
@@ -49,8 +45,7 @@ public class FruitMachine implements FruitMachineInterface {
     // Use an observer pattern for MVC implementation. The observers are either views / controllers
     // depending on the architecture used. This allows views and controllers to respond to state
     // changes without the model having knowledge of them. There are 3 state changes to respond to.
-    private final ArrayList<BalanceObserver> balanceObservers = 
-            new ArrayList<BalanceObserver>();
+    private final ArrayList<BalanceObserver> balanceObservers = new ArrayList<BalanceObserver>();
 
     private final ArrayList<SpinnerSetObserver> spinnerSetObservers =
             new ArrayList<SpinnerSetObserver>();
