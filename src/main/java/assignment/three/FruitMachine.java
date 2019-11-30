@@ -49,7 +49,8 @@ public class FruitMachine implements FruitMachineInterface {
     // Use an observer pattern for MVC implementation. The observers are either views / controllers
     // depending on the architecture used. This allows views and controllers to respond to state
     // changes without the model having knowledge of them. There are 3 state changes to respond to.
-    private final ArrayList<BalanceObserver> balanceObservers = new ArrayList<BalanceObserver>();
+    private final ArrayList<BalanceObserver> balanceObservers = 
+            new ArrayList<BalanceObserver>();
 
     private final ArrayList<SpinnerSetObserver> spinnerSetObservers =
             new ArrayList<SpinnerSetObserver>();
