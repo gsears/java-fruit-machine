@@ -1,19 +1,36 @@
 package assignment.three;
 
-/**
- * Card.Java | Gareth Sears - 2493194
- * 
- * This enum represents the different card values. Using an enum adds clarity to the source code and
- * allows for easy modifications.
- */
+public class Card {
+    private String name;
 
-public enum Card {
-    JOKER, JACK, QUEEN, KING, ACE;
+    Card(String name) {
+        this.name = name.toLowerCase();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 
     // Returns the name in a nicely formatted way, with a capital letter.
     @Override
     public String toString() {
-        String name = name();
         return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof Card) {
+            Card card = (Card) obj;
+            return name.equals(card.getName());
+        } else {
+            return false;
+        }
+
+    }
+
 }
