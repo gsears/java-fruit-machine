@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * of spinners, winning / losing points.
  */
 public class FruitMachine implements FruitMachineInterface {
-    
+
     // Defaults for all machines
     private static final int DEFAULT_NUMBER_OF_SPINNERS = 3;
     private static final int DEFAULT_STARTING_BALANCE = 100;
@@ -24,8 +24,7 @@ public class FruitMachine implements FruitMachineInterface {
     // Use an observer pattern for MVC implementation. The observers are either views / controllers
     // depending on the architecture used. This allows views and controllers to respond to state
     // changes without the model having knowledge of them.
-    private final ArrayList<BalanceObserver> balanceObservers = 
-            new ArrayList<BalanceObserver>();
+    private final ArrayList<BalanceObserver> balanceObservers = new ArrayList<BalanceObserver>();
 
     private final ArrayList<SpinnerSetObserver> spinnerSetObservers =
             new ArrayList<SpinnerSetObserver>();
@@ -36,7 +35,7 @@ public class FruitMachine implements FruitMachineInterface {
     private int spinnerCount; // How many spinners a machine has
     private SpinnerSet spinners; // The card spinners
     private CardCounts lastScoringCounts; // A filtered card combination showing what 'scored'.
-    
+
     private Payouts payouts; // An object for looking up winning payouts for this machine
     private int lastPayout; // The most recent payout
 
@@ -44,7 +43,7 @@ public class FruitMachine implements FruitMachineInterface {
     private int startingBalance = DEFAULT_STARTING_BALANCE;
     private int winningBalance = DEFAULT_WINNING_BALANCE;
     private int losingBalance = DEFAULT_LOSING_BALANCE;
-    
+
     private GameState gameState; // The game state
 
     // MAIN FUNCTION - SET UP A MACHINE WITH PAYOUTS
@@ -56,34 +55,36 @@ public class FruitMachine implements FruitMachineInterface {
         payouts.addPayout(2, 20); // TWO OF A KIND PAYOUT
         payouts.addPayout(3, 50); // THREE OF A KIND PAYOUT
 
+        Card[] cards = {new Card("Joker"), new Card("Jack"), new Card("Queen"), new Card("King"),
+                new Card("Ace")};
+
         // MVC Setup
-        FruitMachine fruitMachineModel = new FruitMachine(payouts);
+        FruitMachine fruitMachineModel = new FruitMachine(payouts, cards);
 
         FruitMachineController fruitMachineController =
                 new FruitMachineController(fruitMachineModel);
 
-        FruitMachineView fruitMachineView = 
-                new FruitMachineView(fruitMachineController);
+        FruitMachineView fruitMachineView = new FruitMachineView(fruitMachineController);
 
         fruitMachineController.addView(fruitMachineView);
 
     }
 
     // Constructor
-    public FruitMachine(Payouts payouts) {
-        this(DEFAULT_NUMBER_OF_SPINNERS, payouts);
+    public FruitMachine(Payouts payouts, Card[] cardArray) {
+        this(DEFAULT_NUMBER_OF_SPINNERS, payouts, cardArray);
     }
 
     // Constructor
-    public FruitMachine(int spinnerCount, Payouts payouts) {
+    public FruitMachine(int spinnerCount, Payouts payouts, Card[] cardArray) {
 
         this.spinnerCount = spinnerCount;
         this.payouts = payouts;
 
         // Instantiate attributes
-        spinners = new SpinnerSet(spinnerCount); // X number of spinners
+        spinners = new SpinnerSet(spinnerCount, cardArray); // X number of spinners
         playerBalance = new Balance(); // Defaults to 0, but is set in 'reset'
-        
+
         reset(); // Initialise all values
     }
 
@@ -99,14 +100,14 @@ public class FruitMachine implements FruitMachineInterface {
 
             spinners.spin();
             CardCounts cardCounts = spinners.getCardCounts(); // e.g. {QUEEN:1, JOKER:2}
-
+            Card jokerCard = new Card("Joker");
             // If there's a JOKER in the current card counts
-            if (cardCounts.contains(Card.JOKER)) {
+            if (cardCounts.contains(jokerCard)) {
 
-                lastPayout = cardCounts.getCount(Card.JOKER) * JOKER_MULTIPLIER; // will be < 0
+                lastPayout = cardCounts.getCount(jokerCard) * JOKER_MULTIPLIER; // will be < 0
 
                 // Filter the results to only include 'scoring' combinations.
-                lastScoringCounts = cardCounts.filterByCard(x -> x == Card.JOKER);
+                lastScoringCounts = cardCounts.filterByCard(x -> x.equals(jokerCard));
 
             } else {
 
@@ -116,9 +117,9 @@ public class FruitMachine implements FruitMachineInterface {
                 // Filter the results to only include 'scoring' combinations.
                 lastScoringCounts = cardCounts.filterByCount(x -> x == highestCount);
             }
-            
+
             notifySpinnerObservers(); // Update any models / controllers with new spinner state
-            updatePlayerBalance();  // Update the player balance
+            updatePlayerBalance(); // Update the player balance
         }
     }
 
@@ -128,9 +129,9 @@ public class FruitMachine implements FruitMachineInterface {
     }
 
     private void updatePlayerBalance() {
-        
+
         if (lastPayout != 0) { // Only do something if there's a change.
-            
+
             int newBalance = playerBalance.change(lastPayout);
             notifyBalanceObservers(); // Update any models / controllers with new balance state
 

@@ -12,15 +12,16 @@ public class Spinner {
 
     // Static to avoid duplicating across spinners...
     private static Random randomNumberGenerator = new Random();
+    private Card[] cardArray;
     private Card card;
 
-    public Spinner() {
+    public Spinner(Card[] cardArray) {
+        this.cardArray = cardArray; // pass by ref.
         spin(); // Initialise with a random card.
     }
 
     public Card spin() {
 
-        Card[] cardArray = Card.values(); // Get an array of cards from the enum
         int randomIndex = randomNumberGenerator.nextInt(cardArray.length); // Get random index
         card = cardArray[randomIndex]; // Get random card and set the attribute
 
