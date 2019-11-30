@@ -19,7 +19,7 @@ public class SpinnerSet {
 
     CardCounts cardCounts = new CardCounts(); // Card count cache
 
-    public SpinnerSet(int count) {
+    public SpinnerSet(int count, Card[] cardArray) {
         this.count = count;
 
         // Initialise 'count' number of spinners.
@@ -28,7 +28,7 @@ public class SpinnerSet {
 
         // Create spinner instances.
         for (int i = 0; i < count; i++) {
-            spinners[i] = new Spinner();
+            spinners[i] = new Spinner(cardArray);
         }
 
         spin(); // Initialise card array and counts.
