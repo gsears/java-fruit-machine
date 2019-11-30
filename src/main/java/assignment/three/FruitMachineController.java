@@ -60,22 +60,28 @@ public class FruitMachineController
 
     @Override
     public void updateGameState() {
-        GameState gameState = model.getGameState();
-
-        if (gameState == GameState.WON) {
-            disablePlay(); // Disable play button
-            view.setVictoryDisplay(VICTORY_MESSAGE); // Display victory message
-        }
-        if (gameState == GameState.LOST) {
-            disablePlay(); // Disable play button
-            view.setVictoryDisplay(LOSE_MESSAGE); // Display lose message
-        }
-
-        // This is only fired when the model resets, i.e. at the start of a new game.
-        if (gameState == GameState.PLAY) {
-            enablePlay(); // Enable spin buttons
-            view.setMessageDisplay(WELCOME_MESSAGE);
-            view.setVictoryDisplay("");
+        try {
+            switch (model.getGameState()) {
+                case WON:
+                    disablePlay(); // Disable play button
+                    view.setVictoryDisplay(VICTORY_MESSAGE); // Display victory message
+                    break;
+                case LOST:
+                    disablePlay(); // Disable play button
+                    view.setVictoryDisplay(LOSE_MESSAGE); // Display lose message
+                    break;
+                case PLAY:
+                    enablePlay(); // Enable spin buttons
+                    view.setMessageDisplay(WELCOME_MESSAGE);
+                    view.setVictoryDisplay("");
+                    break;
+                default:
+                    throw new Exception(String.format(
+                            "The state %s has not been wired into FruitMachineController.updateGameState",
+                            model.getGameState()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

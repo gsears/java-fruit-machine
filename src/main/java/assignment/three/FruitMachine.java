@@ -10,7 +10,10 @@ import java.util.ArrayList;
  * The design was as modular as possible so different types of machine could easily be made by
  * changing a few variables. For example, different machines could have different payouts, numbers
  * of spinners, winning / losing points.
+ * 
+ * MAIN FUNCTION AT BOTTOM OF CLASS FOR READABILITY
  */
+
 public class FruitMachine implements FruitMachineInterface {
     
     // Defaults for all machines
@@ -23,7 +26,7 @@ public class FruitMachine implements FruitMachineInterface {
 
     // Use an observer pattern for MVC implementation. The observers are either views / controllers
     // depending on the architecture used. This allows views and controllers to respond to state
-    // changes without the model having knowledge of them.
+    // changes without the model having knowledge of them. There are 3 state changes to respond to.
     private final ArrayList<BalanceObserver> balanceObservers = 
             new ArrayList<BalanceObserver>();
 
@@ -47,29 +50,7 @@ public class FruitMachine implements FruitMachineInterface {
     
     private GameState gameState; // The game state
 
-    // MAIN FUNCTION - SET UP A MACHINE WITH PAYOUTS
-    public static void main(final String[] args) {
-
-        // This is set outside of the class, as different machines may want different
-        // payouts for different combinations.
-        Payouts payouts = new Payouts();
-        payouts.addPayout(2, 20); // TWO OF A KIND PAYOUT
-        payouts.addPayout(3, 50); // THREE OF A KIND PAYOUT
-
-        // MVC Setup
-        FruitMachine fruitMachineModel = new FruitMachine(payouts);
-
-        FruitMachineController fruitMachineController =
-                new FruitMachineController(fruitMachineModel);
-
-        FruitMachineView fruitMachineView = 
-                new FruitMachineView(fruitMachineController);
-
-        fruitMachineController.addView(fruitMachineView);
-
-    }
-
-    // Constructor
+    // Constructor with default # of spinners
     public FruitMachine(Payouts payouts) {
         this(DEFAULT_NUMBER_OF_SPINNERS, payouts);
     }
@@ -106,6 +87,7 @@ public class FruitMachine implements FruitMachineInterface {
                 lastPayout = cardCounts.getCount(Card.JOKER) * JOKER_MULTIPLIER; // will be < 0
 
                 // Filter the results to only include 'scoring' combinations.
+                // e.g. {QUEEN:1, JOKER:2} -> {JOKER:2}
                 lastScoringCounts = cardCounts.filterByCard(x -> x == Card.JOKER);
 
             } else {
@@ -114,6 +96,7 @@ public class FruitMachine implements FruitMachineInterface {
                 lastPayout = payouts.getPayout(highestCount); // Returns 0 if not a scoring count.
 
                 // Filter the results to only include 'scoring' combinations.
+                // e.g. {QUEEN:1, JACK:2} -> {JACK:2}
                 lastScoringCounts = cardCounts.filterByCount(x -> x == highestCount);
             }
             
@@ -165,7 +148,7 @@ public class FruitMachine implements FruitMachineInterface {
         this.payouts = payouts;
     }
 
-    // These are used to pass state to controllers.
+    // These are used to pull state to controllers.
 
     @Override
     public Card[] getCards() {
@@ -245,6 +228,30 @@ public class FruitMachine implements FruitMachineInterface {
 
     private void notifyGameStateObservers() {
         gameStateObservers.forEach(o -> o.updateGameState());
+    }
+
+    // MAIN FUNCTION - SET UP A MACHINE WITH PAYOUTS
+    public static void main(final String[] args) {
+
+        // This is set outside of the class, as different machines may want different
+        // payouts for different combinations.
+        Payouts payouts = new Payouts();
+        payouts.addPayout(2, 20); // TWO OF A KIND PAYOUT
+        payouts.addPayout(3, 50); // THREE OF A KIND PAYOUT
+
+        // MVC Setup
+
+        // Initialise a machine with the payout configuration.
+        FruitMachine fruitMachineModel = new FruitMachine(payouts);
+
+        FruitMachineController fruitMachineController =
+                new FruitMachineController(fruitMachineModel);
+
+        FruitMachineView fruitMachineView = 
+                new FruitMachineView(fruitMachineController);
+
+        fruitMachineController.addView(fruitMachineView);
+
     }
 
 }

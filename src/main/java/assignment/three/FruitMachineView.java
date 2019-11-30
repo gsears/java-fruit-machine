@@ -114,7 +114,7 @@ public class FruitMachineView extends JFrame {
 
         // Add button action event listeners
         // Uses anonymous classes (concise convention when listeners have a one-to-one
-        // relationship with components.
+        // relationship with components.)
 
         newGameButton.addActionListener(new ActionListener() {
             @Override

@@ -45,7 +45,7 @@ public class Payouts {
         payoutsByCombo.put(cardCountCombo, payout);
     }
 
-    // If the combination has a payout, get it.
+    // If the card combination passed to this method has a payout, get it.
     public int getPayout(CardCounts cardCountCombo) {
 
         int payout = 0;
