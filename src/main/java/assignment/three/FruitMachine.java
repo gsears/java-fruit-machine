@@ -16,19 +16,27 @@ public class FruitMachine implements FruitMachineInterface {
 
     public static void main(final String[] args) {
 
-        Payouts payouts = new Payouts().addPayout(2, 20) // TWO OF A KIND PAYOUT
-                .addPayout(3, 50); // THREE OF A KIND PAYOUT
+        Payouts payouts = new Payouts()
+            .addPayout(2, 20) // TWO OF A KIND PAYOUT
+            .addPayout(3, 50); // THREE OF A KIND PAYOUT
 
-        Card[] cards = {new Card("Joker"), new Card("Jack"), new Card("Queen"), new Card("King"),
-                new Card("Ace")};
+        Card[] cards = {
+            new Card("Joker"), 
+            new Card("Jack"), 
+            new Card("Queen"), 
+            new Card("King"),
+            new Card("Ace")
+        };
 
         // MVC Setup
-        FruitMachine fruitMachineModel = new FruitMachine(payouts, cards);
+        FruitMachine fruitMachineModel = 
+            new FruitMachine(payouts, cards);
 
         FruitMachineController fruitMachineController =
-                new FruitMachineController(fruitMachineModel);
+            new FruitMachineController(fruitMachineModel);
 
-        FruitMachineView fruitMachineView = new FruitMachineView(fruitMachineController);
+        FruitMachineView fruitMachineView = 
+            new FruitMachineView(fruitMachineController);
 
         fruitMachineController.addView(fruitMachineView);
     }
@@ -45,13 +53,14 @@ public class FruitMachine implements FruitMachineInterface {
     // Use an observer pattern for MVC implementation. The observers are either views / controllers
     // depending on the architecture used. This allows views and controllers to respond to state
     // changes without the model having knowledge of them. There are 3 state changes to respond to.
-    private final ArrayList<BalanceObserver> balanceObservers = new ArrayList<BalanceObserver>();
+    private final ArrayList<BalanceObserver> balanceObservers = 
+        new ArrayList<BalanceObserver>();
 
     private final ArrayList<SpinnerSetObserver> spinnerSetObservers =
-            new ArrayList<SpinnerSetObserver>();
+        new ArrayList<SpinnerSetObserver>();
 
     private final ArrayList<GameStateObserver> gameStateObservers =
-            new ArrayList<GameStateObserver>();
+        new ArrayList<GameStateObserver>();
 
     private int spinnerCount; // How many spinners a machine has
     private SpinnerSet spinners; // The card spinners
@@ -97,17 +106,16 @@ public class FruitMachine implements FruitMachineInterface {
 
             spinners.spin();
             CardCounts cardCounts = spinners.getCardCounts(); // e.g. {QUEEN:1, JOKER:2}
-            Card jokerCard = new Card("Joker");
-            // If there's a JOKER in the current card counts
-            if (cardCounts.contains(jokerCard)) {
+            Card jokerCard = new Card("Joker"); // Create a joker card to do comparisons.
 
+            if (cardCounts.contains(jokerCard)) {
                 lastPayout = cardCounts.getCount(jokerCard) * JOKER_MULTIPLIER; // will be < 0
 
                 // Filter the results to only include 'scoring' combinations.
+                // e.g. {QUEEN:1, JOKER:2} -> {JOKER: 2}
                 lastScoringCounts = cardCounts.filterByCard(x -> x.equals(jokerCard));
 
             } else {
-
                 int highestCount = cardCounts.getMaxCardCount();
                 lastPayout = payouts.getPayout(highestCount); // Returns 0 if not a scoring count.
 
@@ -127,9 +135,8 @@ public class FruitMachine implements FruitMachineInterface {
     }
 
     private void updatePlayerBalance() {
-
-        if (lastPayout != 0) { // Only do something if there's a change.
-
+         // Only do something if there's a change.
+        if (lastPayout != 0) {
             int newBalance = playerBalance.change(lastPayout);
             notifyBalanceObservers(); // Update any models / controllers with new balance state
 
