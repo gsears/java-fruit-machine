@@ -23,12 +23,11 @@ public class FruitMachineController
     private static final String VICTORY_MESSAGE = "You win!";
     private static final String LOSE_MESSAGE = "You lose.";
 
-    // Model uses an interface, as we only need to ensure certain functionality is met.
-    // "Futureproofs" our controller for any drastic model refactors.
-    private FruitMachineInterface model;
+    private FruitMachineModel model;
     private FruitMachineView view;
 
-    FruitMachineController(FruitMachineInterface model) {
+    // CONSTRUCTOR
+    FruitMachineController(FruitMachineModel model) {
         this.model = model;
         // Register the controller to observe the relevant model state changes.
         model.registerObserver((BalanceObserver) this);
@@ -37,7 +36,6 @@ public class FruitMachineController
     }
 
     // PUBLIC METHODS for VIEW
-
     public void addView(FruitMachineView view) {
         this.view = view;
         updateAll(); // Initialise view components from the model data on add.
@@ -51,24 +49,25 @@ public class FruitMachineController
         model.reset();
     }
 
-    // Used to set the number of spinners in the view.
+    // Used to set the number of spinners in the view (can be variable).
     public int getSpinnerCount() {
         return model.getSpinnerCount();
     }
 
-    // PUBLIC METHODS for MODEL OBSERVER UPDATES
+    // PUBLIC METHODS for OBSERVER UPDATES
 
+    // Disable / enable buttons and set displays on gameState changes.
     @Override
     public void updateGameState() {
         try {
             switch (model.getGameState()) {
                 case WON:
-                    disablePlay(); // Disable play button
-                    view.setVictoryDisplay(VICTORY_MESSAGE); // Display victory message
+                    disablePlay();
+                    view.setVictoryDisplay(VICTORY_MESSAGE);
                     break;
                 case LOST:
-                    disablePlay(); // Disable play button
-                    view.setVictoryDisplay(LOSE_MESSAGE); // Display lose message
+                    disablePlay();
+                    view.setVictoryDisplay(LOSE_MESSAGE);
                     break;
                 case PLAY:
                     enablePlay(); // Enable spin buttons
@@ -77,7 +76,7 @@ public class FruitMachineController
                     break;
                 default:
                     throw new Exception(String.format(
-                            "The state %s has not been wired into FruitMachineController.updateGameState",
+                            "State %s has not been set in FruitMachineController.updateGameState",
                             model.getGameState()));
             }
         } catch (Exception e) {
@@ -88,12 +87,11 @@ public class FruitMachineController
     @Override
     public void updateSpinners() {
 
-        // SET THE CARDS
-        Card[] cards = model.getCards(); // Get the spinner values from the model
-        view.setSpinners(cards); // Set the card texts in the view
+        // UPDATE THE VIEW SPINNERS
+        view.setSpinners(model.getCards());
 
-        // SET THE DISPLAY
-        CardCounts cardCounts = model.getLastScoringCounts();
+        // UPDATE THE DISPLAY MESSAGE
+        CardCounts cardCounts = model.getLastScoringCardCounts();
 
         // If a scoring combo exists (if the game is initialised for the first time, it doesn't...)
         if (cardCounts != null) {
@@ -110,7 +108,7 @@ public class FruitMachineController
                 payoutString = String.format("You lose £%d", Math.abs(lastPayout));
             }
 
-            // CREATE CARD COUNT DISPLAY STRING
+            // CREATE CARD COUNT DISPLAY STRING (see private method below)
             String cardCountString = convertCardCountsToText(cardCounts);
 
             // SET THE MESSAGE DISPLAY to CARD COUNTS and PAYOUT

@@ -13,22 +13,22 @@ package assignment.three;
 
 public class SpinnerSet {
 
-    private int count;
+    private int size;
     private Spinner[] spinners;
-    private Card[] cards;
+    private Card[] cards; // Holds an array of cards.
 
     CardCounts cardCounts = new CardCounts(); // Card count cache
 
-    public SpinnerSet(int count, Card[] cardArray) {
-        this.count = count;
+    public SpinnerSet(int size, Card[] cardSet) {
+        this.size = size;
 
         // Initialise 'count' number of spinners.
-        spinners = new Spinner[count];
-        cards = new Card[count];
+        spinners = new Spinner[size];
+        cards = new Card[size];
 
         // Create spinner instances.
-        for (int i = 0; i < count; i++) {
-            spinners[i] = new Spinner(cardArray);
+        for (int i = 0; i < size; i++) {
+            spinners[i] = new Spinner(cardSet);
         }
 
         spin(); // Initialise card array and counts.
@@ -38,7 +38,7 @@ public class SpinnerSet {
 
         cardCounts.clear(); // Reset card count cache
 
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < size; i++) {
             Spinner spinner = spinners[i]; // Get each spinner
             Card newCard = spinner.spin(); // Spin and get the value
             cardCounts.add(newCard); // Add to the card count cache.

@@ -141,7 +141,7 @@ public class FruitMachineView extends JFrame {
     // Set methods for controllers.
 
     public void setSpinners(Card[] cards) {
-        spinnerPanel.setCards(cards);
+        spinnerPanel.setSpinners(cards);
     }
 
     public void setBalanceDisplay(String text) {

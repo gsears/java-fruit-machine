@@ -13,12 +13,13 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 class PaddedJPanel extends JPanel {
 
-    int padding;
+    private int padding;
 
-    // Blank constructor allows for padding to be changed later
+    // CONSTRUCTOR
     public PaddedJPanel() {
     }
 
+    // CONSTRUCTOR (sets padding)
     public PaddedJPanel(int padding) {
         this.padding = padding;
         setPadding(padding);

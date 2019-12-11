@@ -42,8 +42,9 @@ public class Payouts {
     private static Map<CardCounts, Integer> payoutsByCombo = new HashMap<CardCounts, Integer>();
 
     // Add a card combination to the map, with its payout.
-    public void addPayout(CardCounts cardCountCombo, int payout) {
+    public Payouts addPayout(CardCounts cardCountCombo, int payout) {
         payoutsByCombo.put(cardCountCombo, payout);
+        return this;
     }
 
     // If the card combination passed to this method has a payout, get it.
