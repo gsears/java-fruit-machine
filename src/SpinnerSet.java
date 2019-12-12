@@ -46,12 +46,18 @@ public class SpinnerSet {
     public void setCards(Card[] cardArray) {
         if (cardArray.length != size) {
             throw new IllegalArgumentException("Card array length must match spinner set size.");
+        } else {
+            cardCounts.clear();
+
+            for (int i = 0; i < size; i++) {
+                Card newCard = cardArray[i];
+                spinners[i].setCard(newCard); // Set the spinner.
+                cardCounts.add(newCard); // Add to the card count cache.
+                cards[i] = cardArray[i]; // Set the internal card array.
+            }
         }
 
-        for (int i = 0; i < size; i++) {
-            spinners[i].setCard(cardArray[i]);
-            cards[i] = cardArray[i];
-        }
+        
     }
 
     // Get the cards shown on the spinners in order (e.g. for spinner views)
