@@ -1,5 +1,3 @@
-package assignment.three;
-
 /**
  * Balance.java | Gareth Sears - 2493194
  * 
@@ -7,18 +5,18 @@ package assignment.three;
  */
 
 public class Balance {
+
     private int currentBalance;
 
-    // Initialise to 0 by default
     public Balance() {
-        this(0);
+        this(0); // Initialise to 0 by default
     }
 
     public Balance(int initialBalance) {
         currentBalance = initialBalance;
     }
 
-    // Expects negative numbers for losses.
+    // Expects negative numbers for fruit machine 'losses'.
     public int change(int amount) {
         currentBalance += amount;
         return currentBalance;

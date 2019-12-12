@@ -1,21 +1,22 @@
-package assignment.three;
-
 import java.util.Map;
 
 /**
  * FruitMachineController.java | Gareth Sears - 2493194
  * 
  * A controller class that detects different changes to the model data via an observer pattern and
- * updates the view accordingly.
+ * updates the view accordingly by 'pulling' the data from said model (as opposed to being 'pushed'
+ * an event object).
  * 
- * It observes different aspects of the model that change at different frequencies to avoid
- * redundant operations (i.e. the spinner is updated more frequently than the balance, and the
- * balance is updated more frequently than the game state.)
+ * It implements different observers because different aspects of the model change at different
+ * frequencies. This reduces 'redundant' updates. This implementation of MVC is based on that found
+ * in Head First Design Patterns
+ * (https://www.oreilly.com/library/view/head-first-design/0596007124/).
  * 
  * It also handles converting the data into nice string formats. This is because the model shouldn't
  * care about the way the data is formatted and the view should be as 'dumb' as possible, its job is
- * to display what it is told to...not decide 'how' to change it.
+ * to display what it is told to...
  */
+
 public class FruitMachineController
         implements BalanceObserver, SpinnerSetObserver, GameStateObserver {
 
@@ -38,7 +39,7 @@ public class FruitMachineController
     // PUBLIC METHODS for VIEW
     public void addView(FruitMachineView view) {
         this.view = view;
-        updateAll(); // Initialise view components from the model data on add.
+        updateAll(); // Pull data from the model on add to update the view.
     }
 
     public void spin() {
@@ -93,7 +94,7 @@ public class FruitMachineController
         // UPDATE THE DISPLAY MESSAGE
         CardCounts cardCounts = model.getLastScoringCardCounts();
 
-        // If a scoring combo exists (if the game is initialised for the first time, it doesn't...)
+        // If a scoring combo exists (if the app is initialised for the first time, it doesn't...)
         if (cardCounts != null) {
 
             // CREATE PAYOUT DISPLAY STRING
@@ -111,7 +112,7 @@ public class FruitMachineController
             // CREATE CARD COUNT DISPLAY STRING (see private method below)
             String cardCountString = convertCardCountsToText(cardCounts);
 
-            // SET THE MESSAGE DISPLAY to CARD COUNTS and PAYOUT
+            // SET THE MESSAGE DISPLAY to show CARD COUNTS and PAYOUT
             view.setMessageDisplay(String.format("%s. %s.", cardCountString, payoutString));
         }
     }
@@ -135,7 +136,7 @@ public class FruitMachineController
         view.setEnabledSpinButton(false);
     }
 
-    // Update ALL view components (for resets / initialisation).
+    // Pull all the data from the model (for resets / initialisation).
     private void updateAll() {
         updateGameState();
         updateSpinners();
@@ -151,7 +152,6 @@ public class FruitMachineController
 
         // For each card / count combination
         for (Map.Entry<Card, Integer> entry : cardCounts.getEntrySet()) {
-
             int count = entry.getValue(); // Get the card count
             String cardString = entry.getKey().toString(); // Convert the card to a string.
 

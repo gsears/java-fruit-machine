@@ -28,7 +28,11 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
+  sourceSets {
+        main.java.srcDirs = ['src']
+    }
+
 application {
     // Define the main class for the application
-    mainClassName = 'assignment.three.FruitMachine'
+    mainClassName = 'FruitMachine'
 }

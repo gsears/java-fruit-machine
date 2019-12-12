@@ -1,5 +1,3 @@
-package assignment.three;
-
 /**
  * GameState.Java | Gareth Sears - 2493194
  * 

@@ -1,5 +1,3 @@
-package assignment.three;
-
 import java.awt.Color;
 import java.awt.GridBagLayout;
 import javax.swing.BorderFactory;

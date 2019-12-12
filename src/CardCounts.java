@@ -1,5 +1,3 @@
-package assignment.three;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -13,19 +11,18 @@ import java.util.stream.Collectors;
  * 
  * Fundamentally, it is an interface to a HashMap with some useful helper methods. For example, the
  * ability to filter by card or count (in the assignment's case, getting any combinations that
- * contain a joker, or the highest card counts). This helps us to have a useful interface for
- * passing data with controlers outside the model (in this case, it is used to output messages to
- * the user telling them which cards are in a winning combo). 
+ * contain a joker, or the highest card counts). This provides a useful mechanism for passing data 
+ * to controllers outside the model, and filtering the sets so that 'winning' results are shown.
  * 
- * It is also more efficient than iterating through an array O(n) -> O(1).
+ * It is also more efficient than iterating through an array to get winning combos O(n) -> O(1).
  * 
  * EXAMPLE USAGE:
  * 
  * CardCounts cardCounts = new CardCounts()
- *  cardCounts.add(Card.JOKER)
- *  cardCounts.add(Card.JOKER)
- *  cardCounts.add(Card.ACE)
- *  cardCounts.add(Card.QUEEN);
+ *  cardCounts.add(new Card("Joker"))
+ *  cardCounts.add(new Card("Joker"))
+ *  cardCounts.add(new Card("Ace"))
+ *  cardCounts.add(new Card("Queen"));
  * 
  * System.out.println(cardCounts); // Map: {Queen=1, Ace=1, Joker=2} MaxCount: 2
  * 
@@ -45,13 +42,6 @@ public class CardCounts {
     private int maxCardCount = 0;
 
     public CardCounts() {
-    }
-
-    // This is private because it is only used to return new card combos following
-    // filter operations. This immutability avoids mutating the original accidentally.
-    private CardCounts(Map<Card, Integer> cardCountMap) {
-        this.cardCountMap = cardCountMap;
-        setMaximum(); // Traverse the new map and set the maximum card count.
     }
 
     public void add(Card card) {
@@ -129,8 +119,7 @@ public class CardCounts {
     // This would be useful for getting scoring combinations related to a specific count.
     // In the assignment's case, the maximum card count(s).
     // e.g.
-    // CardCounts cardsWithMaxCount = cardCounts.filterByCount(x -> x ==
-    // cardCounts.getMaxCardCount());
+    // cardCounts.filterByCount(x -> x == cardCounts.getMaxCardCount());
 
     public CardCounts filterByCount(Predicate<? super Integer> filterFunction) {
         Map<Card, Integer> filteredMap = cardCountMap.entrySet().stream()
@@ -147,7 +136,7 @@ public class CardCounts {
     // This would be useful for getting scoring combinations related to a specific card.
     // In the assignment's case: Card.JOKER.
     // e.g.
-    // CardCounts jokerCounts = cardCounts.filterByCard(x -> x == Card.JOKER)
+    // cardCounts.filterByCard(x -> x == (new Card("Joker"))
 
     public CardCounts filterByCard(Predicate<? super Card> filterFunction) {
         Map<Card, Integer> filteredMap = cardCountMap.entrySet().stream()
@@ -165,6 +154,13 @@ public class CardCounts {
     public String toString() {
         return String.format("%s Map: %s MaxCount: %d", super.toString(), cardCountMap.toString(),
                 maxCardCount);
+    }
+
+    // This is a private constructor used to return new card combos following filter operations. 
+    // Avoids mutating the original hashmap accidentally.
+    private CardCounts(Map<Card, Integer> cardCountMap) {
+        this.cardCountMap = cardCountMap;
+        setMaximum(); // Traverse the new map and set the maximum card count.
     }
 
 }

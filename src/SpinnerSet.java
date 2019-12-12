@@ -1,5 +1,3 @@
-package assignment.three;
-
 /**
  * SpinnerSet.java | Gareth Sears - 2493194
  * 
@@ -7,8 +5,7 @@ package assignment.three;
  * for outside classes to interact with.
  * 
  * The most important of these are the card array (an array of what is actually displayed) and a
- * CardCount object which stores the card counts in a cache to calculate winning combos and for
- * displays.
+ * CardCount object which stores the card counts in a cache to calculate payouts and for displays.
  */
 
 public class SpinnerSet {
@@ -46,12 +43,23 @@ public class SpinnerSet {
         }
     }
 
-    // Get the cards shown on the spinners
+    public void setCards(Card[] cardArray) {
+        if (cardArray.length != size) {
+            throw new IllegalArgumentException("Card array length must match spinner set size.");
+        }
+
+        for (int i = 0; i < size; i++) {
+            spinners[i].setCard(cardArray[i]);
+            cards[i] = cardArray[i];
+        }
+    }
+
+    // Get the cards shown on the spinners in order (e.g. for spinner views)
     public Card[] getCards() {
         return cards;
     }
 
-    // Get the card count cache
+    // Get the card count cache (e.g. for calculating payouts / text displays)
     public CardCounts getCardCounts() {
         return cardCounts;
     }

@@ -1,12 +1,10 @@
-package assignment.three;
-
 import java.awt.GridLayout;
 
 /**
  * SpinnerSetView.java - Gareth Sears | 2493194
  * 
- * A PaddedJPanel which contains a number of SpinnerViews. SIZE sets this number.
- * Can be set by passing it a Card[].
+ * A PaddedJPanel which contains a number of SpinnerViews. SIZE sets this number. Can be set by
+ * passing it a Card[].
  */
 
 @SuppressWarnings("serial")

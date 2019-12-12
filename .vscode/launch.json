@@ -4,6 +4,13 @@
             "type": "java",
             "name": "CodeLens (Launch) - FruitMachine",
             "request": "launch",
+            "mainClass": "FruitMachine",
+            "projectName": "Fruit Machine"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - FruitMachine",
+            "request": "launch",
             "mainClass": "assignment.three.FruitMachine",
             "projectName": "Fruit Machine"
         }

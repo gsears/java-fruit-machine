@@ -1,5 +1,3 @@
-package assignment.three;
-
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -20,8 +18,7 @@ import javax.swing.JPanel;
  * avoid passing around events, only the Spinner panel was encapsulated into another class (as it
  * depends on the number of spinners and the other panels are 'fixed').
  * 
- * It encapsulates the different panel creation into private methods and also provides methods for a
- * controller to set values.
+ * Encapsulation is done locally using private methods for panel creation.
  */
 
 @SuppressWarnings("serial")
@@ -34,8 +31,8 @@ public class FruitMachineView extends JFrame {
     // Components for Button panel.
     PaddedJPanel buttonPanelWrapper;
     JPanel buttonPanel;
-    JButton newGameButton;
     JButton spinButton;
+    JButton newGameButton;
 
     // Components for Message panel.
     PaddedJPanel messagePanel;
@@ -46,6 +43,7 @@ public class FruitMachineView extends JFrame {
     // An encapsulated Spinner panel.
     SpinnerSetView spinnerPanel;
 
+    // Constructor
     public FruitMachineView(FruitMachineController controller) {
         this.controller = controller; // Hook up the controller.
 
@@ -69,6 +67,7 @@ public class FruitMachineView extends JFrame {
         this.setVisible(true);
     }
 
+    // Message Panel
     private void createMessagePanel() {
 
         // New instance of padded panel.
@@ -90,6 +89,7 @@ public class FruitMachineView extends JFrame {
         messagePanel.add(victoryDisplay);
     }
 
+    // Spinner Panel
     private void createSpinnerPanel() {
 
         // New instance of spinner panel
@@ -98,30 +98,24 @@ public class FruitMachineView extends JFrame {
         spinnerPanel.setPadding(PANEL_PADDING);
     }
 
+    // Button Panel
     private void createButtonPanel() {
 
         // New instance of padded panel as a wrapper.
-        // Uses GridBagLayout to auto size border and centralise button panel.
+        // Uses GridBagLayout to auto size border and centralise buttons.
         buttonPanelWrapper = new PaddedJPanel(PANEL_PADDING);
         buttonPanelWrapper.setLayout(new GridBagLayout());
 
-        // New instance of panel for buttons. Grid layout to 'stretch' them.
+        // New instance of panel for buttons. Grid layout 'stretches' them.
         buttonPanel = new JPanel(new GridLayout(2, 1));
 
         // Create instances of components
-        newGameButton = new JButton("New Game");
         spinButton = new JButton("Spin");
+        newGameButton = new JButton("New Game");
 
         // Add button action event listeners
         // Uses anonymous classes (concise convention when listeners have a one-to-one
-        // relationship with components.)
-
-        newGameButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controller.reset();
-            }
-        });
+        // relationship with components, using the interface with the class would be overkill)
 
         spinButton.addActionListener(new ActionListener() {
             @Override
@@ -130,9 +124,17 @@ public class FruitMachineView extends JFrame {
             }
         });
 
+        newGameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.reset();
+            }
+        });
+
         // Add components to button panel
-        buttonPanel.add(newGameButton);
         buttonPanel.add(spinButton);
+        buttonPanel.add(newGameButton);
+        
 
         // Add button panel to wrapper
         buttonPanelWrapper.add(buttonPanel);

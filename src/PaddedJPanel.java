@@ -1,5 +1,3 @@
-package assignment.three;
-
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 

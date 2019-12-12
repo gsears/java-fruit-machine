@@ -1,39 +1,45 @@
-package assignment.three;
-
 import java.util.ArrayList;
 
 /**
  * FruitMachineModel.java | Gareth Sears - 2493194
  * 
- * This is an abstract class which implements functionality for all fruit machines, regardless
- * of card sets / payout rules. It requires a concrete subclass to implement the 'getPayout' 
- * method, which acts as a 'hook' into the spin() method. Inside 'getPayout', the subclass must
- * outline the rules for 'payouts' and use the provided CardCounts object to return these payouts
- * as an int. This method is called every spin.
+ * This is an abstract class which implements the bulk of fruit machine functionality. It uses the
+ * 'template method' pattern, meaning it is a 'skeleton' which defers some of its functionality to
+ * the subclasses.
  * 
- * The model also uses an observer pattern to notify controllers / views of data changes. There are 
- * three different types of observer because each notification occurs at different frequencies. 
- * This pattern was read about in HeadFirst Java Design Patterns and is implemented in a similar manner 
- * here, including the 'casting' style.
+ * In this case, it defers the calculation of payouts in its spin() method to the subclass. This is
+ * because different variants of fruit machine may want different rewards / winning combinations.
  * 
- * It is hoped that the patterns chosen demonstrate encapsulation, modularity and an architecture that
- * can easily be adapted (for when we need to roll out that full casino, fast.)
+ * It also requires the subclass to provide a constructor with the cardset and general
+ * configuration.
+ * 
+ * Finally, it is worth noting that the model uses an observer pattern to notify controllers / views
+ * of data changes. There are three different types of observer because each notification occurs at
+ * different frequencies. This pattern is based on the 'pull' method in HeadFirst Java Design
+ * Patterns (https://www.oreilly.com/library/view/head-first-design/0596007124/) and includes a
+ * similar 'casting' style found in that book, thus the overloaded registerObserver() methods.
+ * 
+ * It is hoped that the patterns chosen demonstrate encapsulation, modularity and an architecture
+ * that can easily be adapted.
  */
 
 public abstract class FruitMachineModel {
 
-    // --------- ABSTRACT METHODS / INTERFACES ---------
+    // --------- ABSTRACT METHODS / HOOKS ---------
 
-    // A hook for concrete classes so they can implement their own winning / losing payout configurations 
-    // based on the CardCounts object provided. Means different machines can have different 'rules'.
+    // An abstract method for subclasses so they can implement their own winning / losing payout
+    // configurations. cardCounts is always provided by this class.
     protected abstract int getPayout(CardCounts cardCounts);
 
-    // The subclass must provide this so controllers know which card combination 'scored' for displays.
+    // The subclass must provide this so controllers can display the scoring card combination.
     public abstract CardCounts getLastScoringCardCounts();
 
-    // -------- OBSERVERS --------
-    // Uses the observer pattern to 
+    // A hook for specifying the initial cards on reset.
+    protected Card[] setInitialCards() {
+        return null;
+    }
 
+    // -------- OBSERVERS --------
     private final ArrayList<SpinnerSetObserver> spinnerSetObservers =
             new ArrayList<SpinnerSetObserver>();
 
@@ -43,9 +49,9 @@ public abstract class FruitMachineModel {
     private final ArrayList<GameStateObserver> gameStateObservers =
             new ArrayList<GameStateObserver>();
 
-    // -------- PRIVATE -----------
+    // -------- ATTRIBUTES -----------
 
-     // The card spinners.
+    // The card spinners.
     private SpinnerSet spinners;
 
     // Keeps track of the balance
@@ -60,6 +66,8 @@ public abstract class FruitMachineModel {
     // The last scoring
     private int lastPayout = 0;
 
+    // --------------------------------
+
     // CONSTRUCTOR
     public FruitMachineModel(int spinnerCount, Card[] cardArray, int winningBalance,
             int losingBalance, int startingBalance) {
@@ -73,11 +81,19 @@ public abstract class FruitMachineModel {
         reset(); // Initialise all values
     }
 
-    // PUBLIC METHODS
-
     public void reset() {
         playerBalance.setBalance(startingBalance); // Reset balance
         notifyBalanceObservers(); // Notify balance observers
+
+        // Gets value from 'setInitialCards' hook so subclasses can set initial cards. 
+        // Otherwise, they're random.
+        Card[] initialCards = setInitialCards();
+
+        if(initialCards != null) {
+            spinners.setCards(initialCards);
+            notifySpinnerObservers();
+        }
+        
         setGameState(GameState.PLAY); // Ready play game state and notify state observers
     }
 
@@ -87,28 +103,29 @@ public abstract class FruitMachineModel {
         notifyGameStateObservers();
     }
 
-    // Ensure valid gameState, call subclass hook, and update spin observers.
-    public void spin() {
+    // Ensure valid gameState, delegate payout calculation to subclasses, update spinner
+    // observers when done. Final, because don't want subclasses overriding it.
+    final public void spin() {
         if (gameState == GameState.PLAY) {
             spinners.spin();
-            // calculatePayout is a hook implemented by subclasses, which can choose their
-            // own payout configurations. See CardFruitMachineModel.java.
+            // The getPayout() below is delegated to subclasses as per 'template method' pattern.
+            // See CardFruitMachineModel.java for the concrete implementation.
             lastPayout = getPayout(spinners.getCardCounts());
             updatePlayerBalance(lastPayout);
             notifySpinnerObservers();
         }
     }
 
-    // Set balance and update game state and observers, only if it changes. 
+    // Set balance and update game state and observers, only if there has been a change.
     private void updatePlayerBalance(int changeAmount) {
 
         if (changeAmount != 0) {
             int newBalance = playerBalance.change(changeAmount);
             notifyBalanceObservers();
 
-            if (newBalance <= losingBalance) {
+            if (newBalance < losingBalance) { // "has less than 0 points"
                 setGameState(GameState.LOST);
-            } else if (newBalance >= winningBalance) {
+            } else if (newBalance >= winningBalance) { // "At least 150 points"
                 setGameState(GameState.WON);
             }
         }
@@ -136,7 +153,7 @@ public abstract class FruitMachineModel {
         return lastPayout;
     }
 
-    // MODEL OBSERVER METHODS
+    // OBSERVER METHODS
 
     public void registerObserver(final GameStateObserver o) {
         gameStateObservers.add(o);
