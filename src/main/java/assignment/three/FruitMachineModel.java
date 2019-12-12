@@ -3,26 +3,28 @@ package assignment.three;
 import java.util.ArrayList;
 
 /**
- * FruitMachine.java | Gareth Sears - 2493194
+ * FruitMachineModel.java | Gareth Sears - 2493194
  * 
- * A model for a fruit machine.
+ * This is an abstract class which implements functionality for all fruit machines, regardless
+ * of card sets / payout rules. It requires an implementation of the 'calculatePayout' hook,
+ * which subclasses use to determine the rules for 'paying out' based on the cardCounts passed
+ * to it.
  * 
- * The design was as modular as possible so different types of machine could easily be made by
- * changing a few variables. For example, different machines could have different payouts, numbers
- * of spinners, winning / losing points.
+ * It was created to make the fruit machine design as modular as possible. Different fruit machines
+ * with different themes and configurations can be built on top of it, such as in CardFruitMachineModel.
  */
 
 public abstract class FruitMachineModel {
 
-    // --------- ABSTRACT METHODS ---------
+    // --------- ABSTRACT METHODS / INTERFACES ---------
+    // See CardFruitMachineModel.java
 
-    // Abstract Spin method, which controls scoring etc.
-    protected abstract int calculatePayout(CardCounts cardCounts);
+    // A hook for concrete classes so they can implement their own winning / losing payout configurations 
+    // based on the CardCounts object provided. Means different machines can have different 'rules'.
+    protected abstract int getPayout(CardCounts cardCounts);
 
-    // Abstract methods that allow controllers to get scoring card combos and payouts.
+    // The subclass must provide this so controllers know which card combination 'scored' for displays.
     public abstract CardCounts getLastScoringCardCounts();
-
-    public abstract int getLastPayout();
 
     // -------- OBSERVERS --------
 
@@ -35,12 +37,10 @@ public abstract class FruitMachineModel {
     private final ArrayList<GameStateObserver> gameStateObservers =
             new ArrayList<GameStateObserver>();
 
-    // -------- PROTECTED ----------
-
-    // The card spinners. Protected so subclasses can directly access them, given their importance.
-    protected SpinnerSet spinners;
-
     // -------- PRIVATE -----------
+
+     // The card spinners.
+    private SpinnerSet spinners;
 
     // Keeps track of the balance
     private Balance playerBalance;
@@ -51,11 +51,10 @@ public abstract class FruitMachineModel {
     // Keeps track of game states: PLAY, WON, LOST.
     private GameState gameState;
 
-
-    // --------- CLASS CODE -------------
+    // The last scoring
+    private int lastPayout = 0;
 
     // CONSTRUCTOR
-
     public FruitMachineModel(int spinnerCount, Card[] cardArray, int winningBalance,
             int losingBalance, int startingBalance) {
 
@@ -65,7 +64,6 @@ public abstract class FruitMachineModel {
 
         spinners = new SpinnerSet(spinnerCount, cardArray);
         playerBalance = new Balance(); // Defaults to 0, but is set in 'reset'
-
         reset(); // Initialise all values
     }
 
@@ -73,22 +71,44 @@ public abstract class FruitMachineModel {
 
     public void reset() {
         playerBalance.setBalance(startingBalance); // Reset balance
-        setGameState(GameState.PLAY); // Reset game state and notify game state observers
         notifyBalanceObservers(); // Notify balance observers
+        setGameState(GameState.PLAY); // Ready play game state and notify state observers
     }
 
-    // Ensure valid gameState, call subclass score calulator method, and update observers
+    // Set gameState and update observers.
+    private void setGameState(GameState gameState) {
+        this.gameState = gameState;
+        notifyGameStateObservers();
+    }
+
+    // Ensure valid gameState, call subclass hook, and update spin observers.
     public void spin() {
         if (gameState == GameState.PLAY) {
-            spinners.spin();  
-
-            // This method is implemented by the subclass.
-            int payout = calculatePayout(spinners.getCardCounts()); 
-
-            setPlayerBalance(payout);
+            spinners.spin();
+            // calculatePayout is a hook implemented by subclasses, which can choose their
+            // own payout configurations. See CardFruitMachineModel.java.
+            lastPayout = getPayout(spinners.getCardCounts());
+            updatePlayerBalance(lastPayout);
             notifySpinnerObservers();
         }
     }
+
+    // Set balance and update game state and observers, only if it changes. 
+    private void updatePlayerBalance(int changeAmount) {
+
+        if (changeAmount != 0) {
+            int newBalance = playerBalance.change(changeAmount);
+            notifyBalanceObservers();
+
+            if (newBalance <= losingBalance) {
+                setGameState(GameState.LOST);
+            } else if (newBalance >= winningBalance) {
+                setGameState(GameState.WON);
+            }
+        }
+    }
+
+    // METHODS FOR CONTROLLERS TO 'PULL' DATA ON NOTIFICATION
 
     public Card[] getCards() {
         return spinners.getCards();
@@ -105,6 +125,12 @@ public abstract class FruitMachineModel {
     public int getPlayerBalance() {
         return playerBalance.getBalance();
     }
+
+    public int getLastPayout() {
+        return lastPayout;
+    }
+
+    // MODEL OBSERVER METHODS
 
     public void registerObserver(final GameStateObserver o) {
         gameStateObservers.add(o);
@@ -134,30 +160,6 @@ public abstract class FruitMachineModel {
     public void removeObserver(final SpinnerSetObserver o) {
         spinnerSetObservers.remove(o);
 
-    }
-
-    // ------- PRIVATE METHODS ----------
-
-    // Set balance only if it changes. Update gameState and observers.
-    // Can be used by subclasses.
-    private void setPlayerBalance(int lastPayout) {
-
-        if (lastPayout != 0) {
-            int newBalance = playerBalance.change(lastPayout);
-            notifyBalanceObservers();
-
-            if (newBalance <= losingBalance) {
-                setGameState(GameState.LOST);
-            } else if (newBalance >= winningBalance) {
-                setGameState(GameState.WON);
-            }
-        }
-    }
-
-    // Set gameState and update observers.
-    private void setGameState(GameState gameState) {
-        this.gameState = gameState;
-        notifyGameStateObservers();
     }
 
     private void notifyBalanceObservers() {
