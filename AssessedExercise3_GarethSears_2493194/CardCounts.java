@@ -34,8 +34,8 @@ import java.util.stream.Collectors;
  * 
  * CardCounts jokerAndAceCardCounts = cardCounts.filterByCard(x -> x == Card.JOKER || x == Card.ACE); 
  * // Map: {Ace=1, Joker=2} MaxCount: 2
- * 
  */
+
 public class CardCounts {
 
     private Map<Card, Integer> cardCountMap = new HashMap<Card, Integer>();
