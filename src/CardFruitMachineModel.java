@@ -14,21 +14,23 @@
 
 public class CardFruitMachineModel extends FruitMachineModel {
 
+    // Machine config
     private static final int NUMBER_OF_SPINNERS = 3;
     private static final int STARTING_BALANCE = 100;
     private static final int WINNING_BALANCE = 150;
     private static final int LOSING_BALANCE = 0;
 
-    // For losing 'payouts'
+    // Card set
     private static final Card JOKER_CARD = new Card("Joker");
     private static final Card JACK_CARD = new Card("Jack");
     private static final Card QUEEN_CARD =  new Card("Queen");
     private static final Card KING_CARD =  new Card("King");
     private static final Card ACE_CARD =  new Card("Ace");
 
+    // For losing 'payouts'
     private static final int NEGATIVE_JOKER_MULTIPLIER = -25;
 
-    private static final Card[] CARDS = {
+    private static final Card[] CARD_SET = {
         JOKER_CARD,
         JACK_CARD,
         QUEEN_CARD,
@@ -45,10 +47,12 @@ public class CardFruitMachineModel extends FruitMachineModel {
     private CardCounts lastScoringCardCounts;
 
     CardFruitMachineModel() {
-        // Call the abstract model class, which takes care of base functionality.
-        super(NUMBER_OF_SPINNERS, CARDS, WINNING_BALANCE, LOSING_BALANCE, STARTING_BALANCE);
+        // Construct the abstract model class, which takes care of base functionality.
+        super(NUMBER_OF_SPINNERS, CARD_SET, WINNING_BALANCE, LOSING_BALANCE, STARTING_BALANCE);
     }
 
+    // This method is a 'hook' in the abstract parent class which is called in its reset() method.
+    // It allows any subclasses to define the initial spinner state.
     @Override
     protected Card[] setInitialCards() {
         return INITIAL_CARDS;
