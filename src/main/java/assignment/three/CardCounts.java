@@ -11,30 +11,32 @@ import java.util.stream.Collectors;
  * 
  * This class is used for caching card counts in spinners and returning them in useful forms.
  * 
- * It enables faster access to specific card cards in a spinner set, rather than iterating over an
- * array looking for particular cards and counting them. O(1), woo!
- * 
  * Fundamentally, it is an interface to a HashMap with some useful helper methods. For example, the
  * ability to filter by card or count (in the assignment's case, getting any combinations that
  * contain a joker, or the highest card counts). This helps us to have a useful interface for
  * passing data with controlers outside the model (in this case, it is used to output messages to
- * the user telling them which cards are in a winning combo).
+ * the user telling them which cards are in a winning combo). 
+ * 
+ * It is also more efficient than iterating through an array O(n) -> O(1).
  * 
  * EXAMPLE USAGE:
  * 
- * CardCounts cardCounts = new CardCounts(); cardCounts.add(Card.JOKER); cardCounts.add(Card.JOKER);
- * cardCounts.add(Card.ACE); cardCounts.add(Card.QUEEN);
+ * CardCounts cardCounts = new CardCounts()
+ *  cardCounts.add(Card.JOKER)
+ *  cardCounts.add(Card.JOKER)
+ *  cardCounts.add(Card.ACE)
+ *  cardCounts.add(Card.QUEEN);
  * 
  * System.out.println(cardCounts); // Map: {Queen=1, Ace=1, Joker=2} MaxCount: 2
  * 
- * CardCounts cardsWithCountOfOne = cardCounts.filterByCount(x -> x == 1); // Map: {Queen=1, Ace=1}
- * MaxCount: 1
+ * CardCounts cardsWithCountOfOne = cardCounts.filterByCount(x -> x == 1); 
+ * // Map: {Queen=1, Ace=1} MaxCount: 1
  * 
  * CardCounts cardsWithMaxCount = cardCounts.filterByCount(x -> x == cardCounts.getMaxCardCount());
  * // Map: {Joker=2} MaxCount: 2;
  * 
- * CardCounts jokerAndAceCardCounts = cardCounts.filterByCard(x -> x == Card.JOKER || x ==
- * Card.ACE); // Map: {Ace=1, Joker=2} MaxCount: 2
+ * CardCounts jokerAndAceCardCounts = cardCounts.filterByCard(x -> x == Card.JOKER || x == Card.ACE); 
+ * // Map: {Ace=1, Joker=2} MaxCount: 2
  * 
  */
 public class CardCounts {
@@ -52,7 +54,7 @@ public class CardCounts {
         setMaximum(); // Traverse the new map and set the maximum card count.
     }
 
-    public CardCounts add(Card card) {
+    public void add(Card card) {
         // If the card is in our cache
         if (cardCountMap.containsKey(card)) {
             // Get the current card count + 1
@@ -71,17 +73,6 @@ public class CardCounts {
                 maxCardCount = 1;
             }
         }
-
-        return this;
-    }
-
-    // Set a particular card with a particular count.
-    public CardCounts add(Card card, int count) {
-        cardCountMap.put(card, count);
-        // Maybe we overwrote the card with the maximum count?
-        // Reset it to be sure.
-        setMaximum();
-        return this;
     }
 
     // Get the count of a particular card
@@ -123,12 +114,9 @@ public class CardCounts {
         return cardCountMap.entrySet();
     }
 
-    public Set<Card> getCardSet() {
-        return cardCountMap.keySet();
-    }
 
-    // Scan through the current map and get the current maximum card count, used if our cache
-    // is set through any other method than 'add'.
+    // Scan through the current map and get the current maximum card count.
+    // Used to reset the maximum on removal of a card.
     private void setMaximum() {
         maxCardCount = cardCountMap.entrySet().stream()
                 // Get the counts of each card

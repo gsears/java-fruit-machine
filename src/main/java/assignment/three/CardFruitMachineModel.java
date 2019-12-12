@@ -11,11 +11,6 @@ public class CardFruitMachineModel extends FruitMachineModel {
     private static final Card JOKER_CARD = new Card("Joker");
     private static final int NEGATIVE_JOKER_MULTIPLIER = -25;
 
-    // For winning payouts
-    private static final Payouts PAYOUTS = new Payouts()
-        .addPayout(2, 20)
-        .addPayout(3, 50);
-
     private static final Card[] CARDS = {
         new Card("Joker"), 
         new Card("Jack"), 
@@ -44,12 +39,19 @@ public class CardFruitMachineModel extends FruitMachineModel {
             return cardCounts.getCount(JOKER_CARD) * NEGATIVE_JOKER_MULTIPLIER;
 
         // WINNING / NO SCORE
-        // Get payout for most reoccuring card in the spinners.
+        // Return payout for most reoccuring card in the spinners.
         } else {
             int highestCount = cardCounts.getMaxCardCount();
             // Set the 'scoring' combo e.g. {QUEEN:1, JACK:2} -> {JACK:2}
             lastScoringCardCounts = cardCounts.filterByCount(x -> x == highestCount);
-            return PAYOUTS.getPayout(highestCount);
+            
+            if (highestCount > 2) {
+                return 50;
+            } else if (highestCount == 2) {
+                return 20;
+            } else {
+                return 0;
+            }
         }
     }
 

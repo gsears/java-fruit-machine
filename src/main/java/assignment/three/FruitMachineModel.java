@@ -6,18 +6,23 @@ import java.util.ArrayList;
  * FruitMachineModel.java | Gareth Sears - 2493194
  * 
  * This is an abstract class which implements functionality for all fruit machines, regardless
- * of card sets / payout rules. It requires an implementation of the 'calculatePayout' hook,
- * which subclasses use to determine the rules for 'paying out' based on the cardCounts passed
- * to it.
+ * of card sets / payout rules. It requires a concrete subclass to implement the 'getPayout' 
+ * method, which acts as a 'hook' into the spin() method. Inside 'getPayout', the subclass must
+ * outline the rules for 'payouts' and use the provided CardCounts object to return these payouts
+ * as an int. This method is called every spin.
  * 
- * It was created to make the fruit machine design as modular as possible. Different fruit machines
- * with different themes and configurations can be built on top of it, such as in CardFruitMachineModel.
+ * The model also uses an observer pattern to notify controllers / views of data changes. There are 
+ * three different types of observer because each notification occurs at different frequencies. 
+ * This pattern was read about in HeadFirst Java Design Patterns and is implemented in a similar manner 
+ * here, including the 'casting' style.
+ * 
+ * It is hoped that the patterns chosen demonstrate encapsulation, modularity and an architecture that
+ * can easily be adapted (for when we need to roll out that full casino, fast.)
  */
 
 public abstract class FruitMachineModel {
 
     // --------- ABSTRACT METHODS / INTERFACES ---------
-    // See CardFruitMachineModel.java
 
     // A hook for concrete classes so they can implement their own winning / losing payout configurations 
     // based on the CardCounts object provided. Means different machines can have different 'rules'.
@@ -27,12 +32,13 @@ public abstract class FruitMachineModel {
     public abstract CardCounts getLastScoringCardCounts();
 
     // -------- OBSERVERS --------
-
-    private final ArrayList<BalanceObserver> balanceObservers = 
-            new ArrayList<BalanceObserver>();
+    // Uses the observer pattern to 
 
     private final ArrayList<SpinnerSetObserver> spinnerSetObservers =
             new ArrayList<SpinnerSetObserver>();
+
+    private final ArrayList<BalanceObserver> balanceObservers = 
+            new ArrayList<BalanceObserver>();
 
     private final ArrayList<GameStateObserver> gameStateObservers =
             new ArrayList<GameStateObserver>();
