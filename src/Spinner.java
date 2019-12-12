@@ -38,7 +38,7 @@ public class Spinner {
             this.card = card;
         } else {
             throw new IllegalArgumentException(
-                    String.format("%s is not part of this spinners Card Set", card));
+                    String.format("%s is not part of this spinner's Card Set", card));
         }
     }
 }
