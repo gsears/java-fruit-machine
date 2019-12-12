@@ -186,7 +186,6 @@ public abstract class FruitMachineModel {
     }
 
     private void notifyBalanceObservers() {
-        System.out.println(playerBalance.getBalance());
         balanceObservers.forEach(o -> o.updateBalance());
     }
 
