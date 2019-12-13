@@ -16,7 +16,8 @@ public class SpinnerSetView extends PaddedJPanel {
     private int size; // How many spinners there are.
     private SpinnerView[] spinnerViewArray;
 
-    SpinnerSetView(int size) {
+    // Constructor
+    public SpinnerSetView(int size) {
         this.size = size;
 
         // Creates on a horizontal grid with padding between grid locations.

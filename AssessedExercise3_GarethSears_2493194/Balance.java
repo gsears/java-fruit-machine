@@ -8,6 +8,7 @@ public class Balance {
 
     private int currentBalance;
 
+    // Constructor
     public Balance() {
         this(0); // Initialise to 0 by default
     }

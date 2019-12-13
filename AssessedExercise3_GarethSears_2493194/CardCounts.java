@@ -41,6 +41,7 @@ public class CardCounts {
     private Map<Card, Integer> cardCountMap = new HashMap<Card, Integer>();
     private int maxCardCount = 0;
 
+    // Constructor
     public CardCounts() {
     }
 
@@ -156,6 +157,7 @@ public class CardCounts {
                 maxCardCount);
     }
 
+    // Constructor
     // This is a private constructor used to return new card combos following filter operations. 
     // Avoids mutating the original hashmap accidentally.
     private CardCounts(Map<Card, Integer> cardCountMap) {

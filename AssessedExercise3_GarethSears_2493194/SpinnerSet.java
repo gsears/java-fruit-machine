@@ -16,6 +16,7 @@ public class SpinnerSet {
 
     CardCounts cardCounts = new CardCounts(); // Card count cache
 
+    // Constructor
     public SpinnerSet(int size, Card[] cardSet) {
         this.size = size;
 

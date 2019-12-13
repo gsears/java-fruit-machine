@@ -14,6 +14,7 @@ public class Spinner {
     private Card[] cardSet;
     private Card card; // The current card.
 
+    // Constructor
     // Java passes arrays by reference (I hope!) so this isn't too wasteful.
     // https://www.tutorialspoint.com/How-to-pass-Arrays-to-Methods-in-Java
     public Spinner(Card[] cardSet) {

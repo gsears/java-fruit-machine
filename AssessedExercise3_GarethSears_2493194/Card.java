@@ -6,10 +6,11 @@
  */
 
 public class Card {
-    
+
     private String name;
 
-    Card(String name) {
+    // Constructor
+    public Card(String name) {
         this.name = name;
     }
 

@@ -27,8 +27,8 @@ public class FruitMachineController
     private FruitMachineModel model;
     private FruitMachineView view;
 
-    // CONSTRUCTOR
-    FruitMachineController(FruitMachineModel model) {
+    // Constructor
+    public FruitMachineController(FruitMachineModel model) {
         this.model = model;
         // Register the controller to observe the relevant model state changes.
         model.registerObserver((BalanceObserver) this);

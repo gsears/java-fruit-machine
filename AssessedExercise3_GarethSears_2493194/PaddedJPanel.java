@@ -13,11 +13,11 @@ class PaddedJPanel extends JPanel {
 
     private int padding;
 
-    // CONSTRUCTOR
+    // Constructor
     public PaddedJPanel() {
     }
 
-    // CONSTRUCTOR (sets padding)
+    // Constructor (sets padding)
     public PaddedJPanel(int padding) {
         this.padding = padding;
         setPadding(padding);

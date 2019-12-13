@@ -46,7 +46,8 @@ public class CardFruitMachineModel extends FruitMachineModel {
 
     private CardCounts lastScoringCardCounts;
 
-    CardFruitMachineModel() {
+    // Constructor
+    public CardFruitMachineModel() {
         // Construct the abstract model class, which takes care of base functionality.
         super(NUMBER_OF_SPINNERS, CARD_SET, WINNING_BALANCE, LOSING_BALANCE, STARTING_BALANCE);
     }

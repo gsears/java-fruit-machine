@@ -68,7 +68,7 @@ public abstract class FruitMachineModel {
 
     // --------------------------------
 
-    // CONSTRUCTOR
+    // Constructor
     public FruitMachineModel(int spinnerCount, Card[] cardArray, int winningBalance,
             int losingBalance, int startingBalance) {
 

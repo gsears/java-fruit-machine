@@ -15,12 +15,12 @@ public class SpinnerView extends JPanel {
 
     private JLabel cardTextLabel;
 
-    // CONSTRUCTOR
+    // Constructor
     public SpinnerView() {
         this(""); // Initialise with no text if none is provided.
     }
 
-    // CONSTRUCTOR
+    // Constructor
     public SpinnerView(String initialText) {
 
         setLayout(new GridBagLayout()); // Gridbag used to centralise text.
