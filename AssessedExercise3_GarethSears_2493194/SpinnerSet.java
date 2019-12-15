@@ -12,7 +12,7 @@ public class SpinnerSet {
 
     private int size;
     private Spinner[] spinners;
-    private Card[] cards; // Holds an array of cards.
+    private Card[] cards; // Holds the current state of the spinners.
 
     CardCounts cardCounts = new CardCounts(); // Card count cache
 

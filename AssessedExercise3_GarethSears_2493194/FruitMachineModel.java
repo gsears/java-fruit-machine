@@ -63,7 +63,7 @@ public abstract class FruitMachineModel {
     // Keeps track of game states: PLAY, WON, LOST.
     private GameState gameState;
 
-    // The last scoring
+    // The last 'score'
     private int lastPayout = 0;
 
     // --------------------------------
@@ -85,6 +85,8 @@ public abstract class FruitMachineModel {
         playerBalance.setBalance(startingBalance); // Reset balance
         notifyBalanceObservers(); // Notify balance observers
 
+        // SUBCLASS HOOK
+        // -------------
         // Gets value from 'setInitialCards' hook so subclasses can set initial cards. 
         // Otherwise, they're random.
         Card[] initialCards = setInitialCards();
@@ -93,6 +95,8 @@ public abstract class FruitMachineModel {
             spinners.setCards(initialCards);
             notifySpinnerObservers();
         }
+
+        // END HOOK
         
         setGameState(GameState.PLAY); // Ready play game state and notify state observers
     }
@@ -108,9 +112,14 @@ public abstract class FruitMachineModel {
     final public void spin() {
         if (gameState == GameState.PLAY) {
             spinners.spin();
+
+            // SUBCLASS METHOD
             // The getPayout() below is delegated to subclasses as per 'template method' pattern.
+            // Allows different machines to set their own payouts.
             // See CardFruitMachineModel.java for the concrete implementation.
             lastPayout = getPayout(spinners.getCardCounts());
+            // END SUBCLASS METHOD
+
             updatePlayerBalance(lastPayout);
             notifySpinnerObservers();
         }
